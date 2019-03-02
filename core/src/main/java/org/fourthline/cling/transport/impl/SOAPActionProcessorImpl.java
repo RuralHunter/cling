@@ -47,7 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Default implementation based on the <em>W3C DOM</em> XML processing API.
@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  */
 public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandler {
 
-    private static Logger log = Logger.getLogger(SOAPActionProcessor.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SOAPActionProcessor.class.getName());
     
     protected DocumentBuilderFactory createDocumentBuilderFactory() throws FactoryConfigurationError {
     	return DocumentBuilderFactory.newInstance();
@@ -64,7 +64,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
 
     public void writeBody(ActionRequestMessage requestMessage, ActionInvocation actionInvocation) throws UnsupportedDataException {
 
-        log.fine("Writing body of " + requestMessage + " for: " + actionInvocation);
+        log.debug("Writing body of " + requestMessage + " for: " + actionInvocation);
 
         try {
 
@@ -75,10 +75,10 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
 
             writeBodyRequest(d, body, requestMessage, actionInvocation);
 
-            if (log.isLoggable(Level.FINER)) {
-                log.finer("===================================== SOAP BODY BEGIN ============================================");
-                log.finer(requestMessage.getBodyString());
-                log.finer("-===================================== SOAP BODY END ============================================");
+            if (log.isDebugEnabled()) {
+                log.debug("===================================== SOAP BODY BEGIN ============================================");
+                log.debug(requestMessage.getBodyString());
+                log.debug("-===================================== SOAP BODY END ============================================");
             }
 
         } catch (Exception ex) {
@@ -88,7 +88,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
 
     public void writeBody(ActionResponseMessage responseMessage, ActionInvocation actionInvocation) throws UnsupportedDataException {
 
-        log.fine("Writing body of " + responseMessage + " for: " + actionInvocation);
+        log.debug("Writing body of " + responseMessage + " for: " + actionInvocation);
 
         try {
 
@@ -103,10 +103,10 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                 writeBodyResponse(d, body, responseMessage, actionInvocation);
             }
 
-            if (log.isLoggable(Level.FINER)) {
-                log.finer("===================================== SOAP BODY BEGIN ============================================");
-                log.finer(responseMessage.getBodyString());
-                log.finer("-===================================== SOAP BODY END ============================================");
+            if (log.isDebugEnabled()) {
+                log.debug("===================================== SOAP BODY BEGIN ============================================");
+                log.debug(responseMessage.getBodyString());
+                log.debug("-===================================== SOAP BODY END ============================================");
             }
 
         } catch (Exception ex) {
@@ -116,11 +116,11 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
 
     public void readBody(ActionRequestMessage requestMessage, ActionInvocation actionInvocation) throws UnsupportedDataException {
 
-        log.fine("Reading body of " + requestMessage + " for: " + actionInvocation);
-        if (log.isLoggable(Level.FINER)) {
-            log.finer("===================================== SOAP BODY BEGIN ============================================");
-            log.finer(requestMessage.getBodyString());
-            log.finer("-===================================== SOAP BODY END ============================================");
+        log.debug("Reading body of " + requestMessage + " for: " + actionInvocation);
+        if (log.isDebugEnabled()) {
+            log.debug("===================================== SOAP BODY BEGIN ============================================");
+            log.debug(requestMessage.getBodyString());
+            log.debug("-===================================== SOAP BODY END ============================================");
         }
 
         String body = getMessageBody(requestMessage);
@@ -144,11 +144,11 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
 
     public void readBody(ActionResponseMessage responseMsg, ActionInvocation actionInvocation) throws UnsupportedDataException {
 
-        log.fine("Reading body of " + responseMsg + " for: " + actionInvocation);
-        if (log.isLoggable(Level.FINER)) {
-            log.finer("===================================== SOAP BODY BEGIN ============================================");
-            log.finer(responseMsg.getBodyString());
-            log.finer("-===================================== SOAP BODY END ============================================");
+        log.debug("Reading body of " + responseMsg + " for: " + actionInvocation);
+        if (log.isDebugEnabled()) {
+            log.debug("===================================== SOAP BODY BEGIN ============================================");
+            log.debug(responseMsg.getBodyString());
+            log.debug("-===================================== SOAP BODY END ============================================");
         }
 
         String body = getMessageBody(responseMsg);
@@ -276,7 +276,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                                                 ActionRequestMessage message,
                                                 ActionInvocation actionInvocation) {
 
-        log.fine("Writing action request element: " + actionInvocation.getAction().getName());
+        log.debug("Writing action request element: " + actionInvocation.getAction().getName());
 
         Element actionRequestElement = d.createElementNS(
                 message.getActionNamespace(),
@@ -292,7 +292,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                                                ActionInvocation actionInvocation) {
         NodeList bodyChildren = bodyElement.getChildNodes();
 
-        log.fine("Looking for action request element matching namespace:" + message.getActionNamespace());
+        log.debug("Looking for action request element matching namespace:" + message.getActionNamespace());
 
         for (int i = 0; i < bodyChildren.getLength(); i++) {
             Node bodyChild = bodyChildren.item(i);
@@ -307,7 +307,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                     throw new UnsupportedDataException(
                         "Illegal or missing namespace on action request element: " + bodyChild
                     );
-                log.fine("Reading action request element: " + unprefixedName);
+                log.debug("Reading action request element: " + unprefixedName);
                 return (Element) bodyChild;
             }
         }
@@ -323,7 +323,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                                                  ActionResponseMessage message,
                                                  ActionInvocation actionInvocation) {
 
-        log.fine("Writing action response element: " + actionInvocation.getAction().getName());
+        log.debug("Writing action response element: " + actionInvocation.getAction().getName());
         Element actionResponseElement = d.createElementNS(
                 message.getActionNamespace(),
                 "u:" + actionInvocation.getAction().getName() + "Response"
@@ -343,11 +343,11 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                 continue;
 
             if (getUnprefixedNodeName(bodyChild).equals(actionInvocation.getAction().getName() + "Response")) {
-                log.fine("Reading action response element: " + getUnprefixedNodeName(bodyChild));
+                log.debug("Reading action response element: " + getUnprefixedNodeName(bodyChild));
                 return (Element) bodyChild;
             }
         }
-        log.fine("Could not read action response element");
+        log.debug("Could not read action response element");
         return null;
     }
 
@@ -358,7 +358,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                                              ActionInvocation actionInvocation) {
 
         for (ActionArgument argument : actionInvocation.getAction().getInputArguments()) {
-            log.fine("Writing action input argument: " + argument.getName());
+            log.debug("Writing action input argument: " + argument.getName());
             String value = actionInvocation.getInput(argument) != null ? actionInvocation.getInput(argument).toString() : "";
             XMLUtil.appendNewElement(d, actionRequestElement, argument.getName(), value);
         }
@@ -381,7 +381,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                                               ActionInvocation actionInvocation) {
 
         for (ActionArgument argument : actionInvocation.getAction().getOutputArguments()) {
-            log.fine("Writing action output argument: " + argument.getName());
+            log.debug("Writing action output argument: " + argument.getName());
             String value = actionInvocation.getOutput(argument) != null ? actionInvocation.getOutput(argument).toString() : "";
             XMLUtil.appendNewElement(d, actionResponseElement, argument.getName(), value);
         }
@@ -418,7 +418,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
         int errorCode = actionInvocation.getFailure().getErrorCode();
         String errorDescription = actionInvocation.getFailure().getMessage();
 
-        log.fine("Writing fault element: " + errorCode + " - " + errorDescription);
+        log.debug("Writing fault element: " + errorCode + " - " + errorDescription);
 
         XMLUtil.appendNewElement(d, upnpErrorElement, "errorCode", Integer.toString(errorCode));
         XMLUtil.appendNewElement(d, upnpErrorElement, "errorDescription", errorDescription);
@@ -487,10 +487,10 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                 int numericCode = Integer.valueOf(errorCode);
                 ErrorCode standardErrorCode = ErrorCode.getByCode(numericCode);
                 if (standardErrorCode != null) {
-                    log.fine("Reading fault element: " + standardErrorCode.getCode() + " - " + errorDescription);
+                    log.debug("Reading fault element: " + standardErrorCode.getCode() + " - " + errorDescription);
                     return new ActionException(standardErrorCode, errorDescription, false);
                 } else {
-                    log.fine("Reading fault element: " + numericCode + " - " + errorDescription);
+                    log.debug("Reading fault element: " + numericCode + " - " + errorDescription);
                     return new ActionException(numericCode, errorDescription);
                 }
             } catch (NumberFormatException ex) {
@@ -551,7 +551,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
                         ErrorCode.ARGUMENT_VALUE_INVALID,
                         "Could not find argument '" + arg.getName() + "' node");
             }
-            log.fine("Reading action argument: " + arg.getName());
+            log.debug("Reading action argument: " + arg.getName());
             String value = XMLUtil.getTextContent(node);
             values[i] = createValue(arg, value);
         }
@@ -619,7 +619,7 @@ public class SOAPActionProcessorImpl implements SOAPActionProcessor, ErrorHandle
     }
 
     public void warning(SAXParseException e) throws SAXException {
-        log.warning(e.toString());
+        log.warn(e.toString());
     }
 
     public void error(SAXParseException e) throws SAXException {

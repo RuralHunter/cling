@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Transforms known and standardized DLNA attributes from/to string representation.
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public abstract class DLNAAttribute<T> {
 
-    final private static Logger log = Logger.getLogger(DLNAAttribute.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(DLNAAttribute.class.getName());
 
     /**
      * Maps a standardized DLNA attribute to potential attribute subtypes.
@@ -126,17 +126,17 @@ public abstract class DLNAAttribute<T> {
         for (int i = 0; i < type.getAttributeTypes().length && attr == null; i++) {
             Class<? extends DLNAAttribute> attributeClass = type.getAttributeTypes()[i];
             try {
-                log.finest("Trying to parse DLNA '" + type + "' with class: " + attributeClass.getSimpleName());
+                log.trace("Trying to parse DLNA '" + type + "' with class: " + attributeClass.getSimpleName());
                 attr = attributeClass.newInstance();
                 if (attributeValue != null) {
                     attr.setString(attributeValue, contentFormat);
                 }
             } catch (InvalidDLNAProtocolAttributeException ex) {
-                log.finest("Invalid DLNA attribute value for tested type: " + attributeClass.getSimpleName() + " - " + ex.getMessage());
+                log.trace("Invalid DLNA attribute value for tested type: " + attributeClass.getSimpleName() + " - " + ex.getMessage());
                 attr = null;
             } catch (Exception ex) {
-                log.severe("Error instantiating DLNA attribute of type '" + type + "' with value: " + attributeValue);
-                log.log(Level.SEVERE, "Exception root cause: ", Exceptions.unwrap(ex));
+                log.error("Error instantiating DLNA attribute of type '" + type + "' with value: " + attributeValue);
+                log.error( "Exception root cause: ", Exceptions.unwrap(ex));
             }
         }
         return attr;

@@ -33,7 +33,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Default implementation based on the JDK 6.0 built-in HTTP Server.
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  */
 public abstract class HttpExchangeUpnpStream extends UpnpStream {
 
-    private static Logger log = Logger.getLogger(UpnpStream.class.getName());
+    private static Logger log = LoggerFactory.getLogger(UpnpStream.class.getName());
 
     private HttpExchange httpExchange;
 
@@ -61,7 +61,7 @@ public abstract class HttpExchangeUpnpStream extends UpnpStream {
     public void run() {
 
         try {
-            log.fine("Processing HTTP request: " + getHttpExchange().getRequestMethod() + " " + getHttpExchange().getRequestURI());
+            log.debug("Processing HTTP request: " + getHttpExchange().getRequestMethod() + " " + getHttpExchange().getRequestURI());
 
             // Status
             StreamRequestMessage requestMessage =
@@ -71,7 +71,7 @@ public abstract class HttpExchangeUpnpStream extends UpnpStream {
                     );
 
             if (requestMessage.getOperation().getMethod().equals(UpnpRequest.Method.UNKNOWN)) {
-                log.fine("Method not supported by UPnP stack: " + getHttpExchange().getRequestMethod());
+                log.debug("Method not supported by UPnP stack: " + getHttpExchange().getRequestMethod());
                 throw new RuntimeException("Method not supported: " + getHttpExchange().getRequestMethod());
             }
 
@@ -80,7 +80,7 @@ public abstract class HttpExchangeUpnpStream extends UpnpStream {
                     getHttpExchange().getProtocol().toUpperCase(Locale.ROOT).equals("HTTP/1.1") ? 1 : 0
             );
 
-            log.fine("Created new request message: " + requestMessage);
+            log.debug("Created new request message: " + requestMessage);
 
             // Connection wrapper
             requestMessage.setConnection(createConnection());
@@ -99,20 +99,20 @@ public abstract class HttpExchangeUpnpStream extends UpnpStream {
                     is.close();
             }
 
-            log.fine("Reading request body bytes: " + bodyBytes.length);
+            log.debug("Reading request body bytes: " + bodyBytes.length);
 
             if (bodyBytes.length > 0 && requestMessage.isContentTypeMissingOrText()) {
 
-                log.fine("Request contains textual entity body, converting then setting string on message");
+                log.debug("Request contains textual entity body, converting then setting string on message");
                 requestMessage.setBodyCharacters(bodyBytes);
 
             } else if (bodyBytes.length > 0) {
 
-                log.fine("Request contains binary entity body, setting bytes on message");
+                log.debug("Request contains binary entity body, setting bytes on message");
                 requestMessage.setBody(UpnpMessage.BodyType.BYTES, bodyBytes);
 
             } else {
-                log.fine("Request did not contain entity body");
+                log.debug("Request did not contain entity body");
             }
 
             // Process it
@@ -120,7 +120,7 @@ public abstract class HttpExchangeUpnpStream extends UpnpStream {
 
             // Return the response
             if (responseMessage != null) {
-                log.fine("Preparing HTTP response message: " + responseMessage);
+                log.debug("Preparing HTTP response message: " + responseMessage);
 
                 // Headers
                 getHttpExchange().getResponseHeaders().putAll(
@@ -131,11 +131,11 @@ public abstract class HttpExchangeUpnpStream extends UpnpStream {
                 byte[] responseBodyBytes = responseMessage.hasBody() ? responseMessage.getBodyBytes() : null;
                 int contentLength = responseBodyBytes != null ? responseBodyBytes.length : -1;
 
-                log.fine("Sending HTTP response message: " + responseMessage + " with content length: " + contentLength);
+                log.debug("Sending HTTP response message: " + responseMessage + " with content length: " + contentLength);
                 getHttpExchange().sendResponseHeaders(responseMessage.getOperation().getStatusCode(), contentLength);
 
                 if (contentLength > 0) {
-                    log.fine("Response message has body, writing bytes to stream...");
+                    log.debug("Response message has body, writing bytes to stream...");
                     OutputStream os = null;
                     try {
                         os = getHttpExchange().getResponseBody();
@@ -149,7 +149,7 @@ public abstract class HttpExchangeUpnpStream extends UpnpStream {
 
             } else {
                 // If it's null, it's 404, everything else needs a proper httpResponse
-                log.fine("Sending HTTP response status: " + HttpURLConnection.HTTP_NOT_FOUND);
+                log.debug("Sending HTTP response status: " + HttpURLConnection.HTTP_NOT_FOUND);
                 getHttpExchange().sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, -1);
             }
 
@@ -166,14 +166,14 @@ public abstract class HttpExchangeUpnpStream extends UpnpStream {
             // TODO: We should only send an error if the problem was on our side
             // You don't have to catch Throwable unless, like we do here in unit tests,
             // you might run into Errors as well (assertions).
-            log.fine("Exception occured during UPnP stream processing: " + t);
-            if (log.isLoggable(Level.FINE)) {
-                log.log(Level.FINE, "Cause: " + Exceptions.unwrap(t), Exceptions.unwrap(t));
+            log.debug("Exception occured during UPnP stream processing: " + t);
+            if (log.isDebugEnabled()) {
+                log.debug( "Cause: " + Exceptions.unwrap(t), Exceptions.unwrap(t));
             }
             try {
                 httpExchange.sendResponseHeaders(HttpURLConnection.HTTP_INTERNAL_ERROR, -1);
             } catch (IOException ex) {
-                log.warning("Couldn't send error response: " + ex);
+                log.warn("Couldn't send error response: " + ex);
             }
 
             responseException(t);

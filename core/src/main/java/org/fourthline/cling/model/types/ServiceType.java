@@ -17,7 +17,7 @@ package org.fourthline.cling.model.types;
 
 import org.fourthline.cling.model.Constants;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -32,7 +32,7 @@ import java.util.regex.Matcher;
  */
 public class ServiceType {
 
-    final private static Logger log = Logger.getLogger(ServiceType.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(ServiceType.class.getName());
 
     public static final Pattern PATTERN =
         Pattern.compile("urn:(" + Constants.REGEX_NAMESPACE + "):service:(" + Constants.REGEX_TYPE + "):([0-9]+).*");
@@ -116,7 +116,7 @@ public class ServiceType {
             matcher = Pattern.compile("urn:(" + Constants.REGEX_NAMESPACE + "):service:(.+?):([0-9]+).*").matcher(s);
             if (matcher.matches() && matcher.groupCount() >= 3) {
                 String cleanToken = matcher.group(2).replaceAll("[^a-zA-Z_0-9\\-]", "-");
-                log.warning(
+                log.warn(
                     "UPnP specification violation, replacing invalid service type token '"
                         + matcher.group(2)
                         + "' with: "
@@ -130,7 +130,7 @@ public class ServiceType {
             matcher = Pattern.compile("urn:(" + Constants.REGEX_NAMESPACE + "):serviceId:(.+?):([0-9]+).*").matcher(s);
             if (matcher.matches() && matcher.groupCount() >= 3) {
                 String cleanToken = matcher.group(2).replaceAll("[^a-zA-Z_0-9\\-]", "-");
-                log.warning(
+                log.warn(
                     "UPnP specification violation, replacing invalid service type token '"
                     + matcher.group(2)
                     + "' with: "

@@ -39,7 +39,7 @@ import org.seamless.statemachine.TransitionException;
 import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * State-machine based implementation of AVTransport service.
@@ -78,7 +78,7 @@ import java.util.logging.Logger;
  */
 public class AVTransportService<T extends AVTransport> extends AbstractAVTransportService {
 
-    final private static Logger log = Logger.getLogger(AVTransportService.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(AVTransportService.class.getName());
 
     final private Map<Long, AVTransportStateMachine> stateMachines = new ConcurrentHashMap();
 
@@ -290,13 +290,13 @@ public class AVTransportService<T extends AVTransport> extends AbstractAVTranspo
             long id = instanceId.getValue();
             AVTransportStateMachine stateMachine = stateMachines.get(id);
             if (stateMachine == null && id == 0 && createDefaultTransport) {
-                log.fine("Creating default transport instance with ID '0'");
+                log.debug("Creating default transport instance with ID '0'");
                 stateMachine = createStateMachine(instanceId);
                 stateMachines.put(id, stateMachine);
             } else if (stateMachine == null) {
                 throw new AVTransportException(AVTransportErrorCode.INVALID_INSTANCE_ID);
             }
-            log.fine("Found transport control with ID '" + id + "'");
+            log.debug("Found transport control with ID '" + id + "'");
             return stateMachine;
         }
     }

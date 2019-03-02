@@ -26,7 +26,7 @@ import org.fourthline.cling.transport.spi.StreamServer;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Implementation based on the built-in SUN JDK 6.0 HTTP Server.
@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  */
 public class StreamServerImpl implements StreamServer<StreamServerConfigurationImpl> {
 
-    private static Logger log = Logger.getLogger(StreamServer.class.getName());
+    private static Logger log = LoggerFactory.getLogger(StreamServer.class.getName());
 
     final protected StreamServerConfigurationImpl configuration;
     protected HttpServer server;
@@ -79,13 +79,13 @@ public class StreamServerImpl implements StreamServer<StreamServerConfigurationI
     }
 
     synchronized public void run() {
-        log.fine("Starting StreamServer...");
+        log.debug("Starting StreamServer...");
         // Starts a new thread but inherits the properties of the calling thread
         server.start();
     }
 
     synchronized public void stop() {
-        log.fine("Stopping StreamServer...");
+        log.debug("Stopping StreamServer...");
         if (server != null) server.stop(1);
     }
 
@@ -101,7 +101,7 @@ public class StreamServerImpl implements StreamServer<StreamServerConfigurationI
         public void handle(final HttpExchange httpExchange) throws IOException {
             // And we pass control to the service, which will (hopefully) start a new thread immediately so we can
             // continue the receiving thread ASAP
-            log.fine("Received HTTP exchange: " + httpExchange.getRequestMethod() + " " + httpExchange.getRequestURI());
+            log.debug("Received HTTP exchange: " + httpExchange.getRequestMethod() + " " + httpExchange.getRequestURI());
             router.received(
                 new HttpExchangeUpnpStream(router.getProtocolFactory(), httpExchange) {
                     @Override
@@ -120,7 +120,7 @@ public class StreamServerImpl implements StreamServer<StreamServerConfigurationI
      * </p>
      */
     protected boolean isConnectionOpen(HttpExchange exchange) {
-        log.warning("Can't check client connection, socket access impossible on JDK webserver!");
+        log.warn("Can't check client connection, socket access impossible on JDK webserver!");
         return true;
     }
 

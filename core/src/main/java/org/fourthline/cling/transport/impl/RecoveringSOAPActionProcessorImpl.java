@@ -15,7 +15,7 @@
 
 package org.fourthline.cling.transport.impl;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.fourthline.cling.model.action.ActionInvocation;
 import org.fourthline.cling.model.message.control.ActionRequestMessage;
@@ -52,7 +52,7 @@ import javax.enterprise.inject.Alternative;
 @Alternative
 public class RecoveringSOAPActionProcessorImpl extends PullSOAPActionProcessorImpl {
 
-    private static Logger log = Logger.getLogger(SOAPActionProcessor.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SOAPActionProcessor.class.getName());
 
     public void readBody(ActionRequestMessage requestMessage, ActionInvocation actionInvocation) throws UnsupportedDataException {
         try {
@@ -63,7 +63,7 @@ public class RecoveringSOAPActionProcessorImpl extends PullSOAPActionProcessorIm
             if (!requestMessage.isBodyNonEmptyString())
                 throw ex;
 
-            log.warning("Trying to recover from invalid SOAP XML request: " + ex);
+            log.warn("Trying to recover from invalid SOAP XML request: " + ex);
             String body = getMessageBody(requestMessage);
 
             // TODO: UPNP VIOLATION: TwonkyMobile sends unencoded '&' in SetAVTransportURI action calls:
@@ -89,7 +89,7 @@ public class RecoveringSOAPActionProcessorImpl extends PullSOAPActionProcessorIm
             if (!responseMsg.isBodyNonEmptyString())
                 throw ex;
 
-            log.warning("Trying to recover from invalid SOAP XML response: " + ex);
+            log.warn("Trying to recover from invalid SOAP XML response: " + ex);
             String body = getMessageBody(responseMsg);
 
             // TODO: UPNP VIOLATION: TwonkyMobile doesn't properly encode '&'

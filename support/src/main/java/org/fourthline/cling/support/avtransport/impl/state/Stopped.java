@@ -23,21 +23,21 @@ import org.fourthline.cling.support.model.TransportInfo;
 import org.fourthline.cling.support.model.TransportState;
 
 import java.net.URI;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public abstract class Stopped<T extends AVTransport> extends AbstractState<T> {
 
-    final private static Logger log = Logger.getLogger(Stopped.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(Stopped.class.getName());
 
     public Stopped(T transport) {
         super(transport);
     }
 
     public void onEntry() {
-        log.fine("Setting transport state to STOPPED");
+        log.debug("Setting transport state to STOPPED");
         getTransport().setTransportInfo(
                 new TransportInfo(
                         TransportState.STOPPED,

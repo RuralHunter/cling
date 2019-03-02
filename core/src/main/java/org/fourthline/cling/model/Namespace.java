@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.fourthline.cling.model.meta.Device;
 import org.fourthline.cling.model.meta.Icon;
@@ -58,7 +58,7 @@ import org.seamless.util.URIUtil;
  */
 public class Namespace {
 
-    final private static Logger log = Logger.getLogger(Namespace.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(Namespace.class.getName());
 
     public static final String DEVICE = "/dev";
     public static final String SERVICE = "/svc";
@@ -158,12 +158,12 @@ public class Namespace {
         Set<Resource> resources = new HashSet<>();
         List<ValidationError> errors = new ArrayList<>();
 
-        log.fine("Discovering local resources of device graph");
+        log.debug("Discovering local resources of device graph");
         Resource[] discoveredResources = device.discoverResources(this);
         for (Resource resource : discoveredResources) {
-            log.finer("Discovered: " + resource);
+            log.debug("Discovered: " + resource);
             if (!resources.add(resource)) {
-                log.finer("Local resource already exists, queueing validation error");
+                log.debug("Local resource already exists, queueing validation error");
                 errors.add(new ValidationError(
                     getClass(),
                     "resources",

@@ -39,7 +39,7 @@ import javax.xml.parsers.FactoryConfigurationError;
 
 import java.io.StringReader;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Default implementation based on the <em>W3C DOM</em> XML processing API.
@@ -48,14 +48,14 @@ import java.util.logging.Logger;
  */
 public class GENAEventProcessorImpl implements GENAEventProcessor, ErrorHandler {
 
-    private static Logger log = Logger.getLogger(GENAEventProcessor.class.getName());
+    private static Logger log = LoggerFactory.getLogger(GENAEventProcessor.class.getName());
 
     protected DocumentBuilderFactory createDocumentBuilderFactory() throws FactoryConfigurationError {
     	return DocumentBuilderFactory.newInstance();
     }
 
     public void writeBody(OutgoingEventRequestMessage requestMessage) throws UnsupportedDataException {
-        log.fine("Writing body of: " + requestMessage);
+        log.debug("Writing body of: " + requestMessage);
 
         try {
 
@@ -68,10 +68,10 @@ public class GENAEventProcessorImpl implements GENAEventProcessor, ErrorHandler 
 
             requestMessage.setBody(UpnpMessage.BodyType.STRING, toString(d));
 
-            if (log.isLoggable(Level.FINER)) {
-                log.finer("===================================== GENA BODY BEGIN ============================================");
-                log.finer(requestMessage.getBody().toString());
-                log.finer("====================================== GENA BODY END =============================================");
+            if (log.isDebugEnabled()) {
+                log.debug("===================================== GENA BODY BEGIN ============================================");
+                log.debug(requestMessage.getBody().toString());
+                log.debug("====================================== GENA BODY END =============================================");
             }
 
         } catch (Exception ex) {
@@ -81,11 +81,11 @@ public class GENAEventProcessorImpl implements GENAEventProcessor, ErrorHandler 
 
     public void readBody(IncomingEventRequestMessage requestMessage) throws UnsupportedDataException {
 
-        log.fine("Reading body of: " + requestMessage);
-        if (log.isLoggable(Level.FINER)) {
-            log.finer("===================================== GENA BODY BEGIN ============================================");
-            log.finer(requestMessage.getBody() != null ? requestMessage.getBody().toString() : "null");
-            log.finer("-===================================== GENA BODY END ============================================");
+        log.debug("Reading body of: " + requestMessage);
+        if (log.isDebugEnabled()) {
+            log.debug("===================================== GENA BODY BEGIN ============================================");
+            log.debug(requestMessage.getBody() != null ? requestMessage.getBody().toString() : "null");
+            log.debug("-===================================== GENA BODY END ============================================");
         }
 
         String body = getMessageBody(requestMessage);
@@ -165,7 +165,7 @@ public class GENAEventProcessorImpl implements GENAEventProcessor, ErrorHandler 
                     String stateVariableName = getUnprefixedNodeName(propertyChild);
                     for (StateVariable stateVariable : stateVariables) {
                         if (stateVariable.getName().equals(stateVariableName)) {
-                            log.fine("Reading state variable value: " + stateVariableName);
+                            log.debug("Reading state variable value: " + stateVariableName);
                             String value = XMLUtil.getTextContent(propertyChild);
                             message.getStateVariableValues().add(
                                     new StateVariableValue(stateVariable, value)
@@ -206,7 +206,7 @@ public class GENAEventProcessorImpl implements GENAEventProcessor, ErrorHandler 
     }
 
     public void warning(SAXParseException e) throws SAXException {
-        log.warning(e.toString());
+        log.warn(e.toString());
     }
 
     public void error(SAXParseException e) throws SAXException {

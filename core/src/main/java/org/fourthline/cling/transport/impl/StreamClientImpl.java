@@ -40,7 +40,7 @@ import java.net.URLStreamHandlerFactory;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Default implementation based on the JDK's <code>HttpURLConnection</code>.
@@ -69,7 +69,7 @@ public class StreamClientImpl implements StreamClient {
 
     final static String HACK_STREAM_HANDLER_SYSTEM_PROPERTY = "hackStreamHandlerProperty";
 
-    final private static Logger log = Logger.getLogger(StreamClient.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(StreamClient.class.getName());
 
     final protected StreamClientConfigurationImpl configuration;
 
@@ -95,12 +95,12 @@ public class StreamClientImpl implements StreamClient {
             );
         }
 
-        log.fine("Using persistent HTTP stream client connections: " + configuration.isUsePersistentConnections());
+        log.debug("Using persistent HTTP stream client connections: " + configuration.isUsePersistentConnections());
         System.setProperty("http.keepAlive", Boolean.toString(configuration.isUsePersistentConnections()));
 
         // Hack the environment to allow additional HTTP methods
         if (System.getProperty(HACK_STREAM_HANDLER_SYSTEM_PROPERTY) == null) {
-            log.fine("Setting custom static URLStreamHandlerFactory to work around bad JDK defaults");
+            log.debug("Setting custom static URLStreamHandlerFactory to work around bad JDK defaults");
             try {
                 // Use reflection to avoid dependency on sun.net package so this class at least
                 // loads on Android, even if it doesn't work...
@@ -128,7 +128,7 @@ public class StreamClientImpl implements StreamClient {
     public StreamResponseMessage sendRequest(StreamRequestMessage requestMessage) {
 
         final UpnpRequest requestOperation = requestMessage.getOperation();
-        log.fine("Preparing HTTP request message with method '" + requestOperation.getHttpMethodName() + "': " + requestMessage);
+        log.debug("Preparing HTTP request message with method '" + requestOperation.getHttpMethodName() + "': " + requestMessage);
 
         URL url = URIUtil.toURL(requestOperation.getURI());
 
@@ -147,17 +147,17 @@ public class StreamClientImpl implements StreamClient {
             applyRequestProperties(urlConnection, requestMessage);
             applyRequestBody(urlConnection, requestMessage);
 
-            log.fine("Sending HTTP request: " + requestMessage);
+            log.debug("Sending HTTP request: " + requestMessage);
             inputStream = urlConnection.getInputStream();
             return createResponse(urlConnection, inputStream);
 
         } catch (ProtocolException ex) {
-            log.log(Level.WARNING, "HTTP request failed: " + requestMessage, Exceptions.unwrap(ex));
+            log.warn( "HTTP request failed: " + requestMessage, Exceptions.unwrap(ex));
             return null;
         } catch (IOException ex) {
 
             if (urlConnection == null) {
-                log.log(Level.WARNING, "HTTP request failed: " + requestMessage, Exceptions.unwrap(ex));
+                log.warn( "HTTP request failed: " + requestMessage, Exceptions.unwrap(ex));
                 return null;
             }
 
@@ -169,18 +169,18 @@ public class StreamClientImpl implements StreamClient {
                 return null;
             }
 
-            if (log.isLoggable(Level.FINE))
-                log.fine("Exception occurred, trying to read the error stream: " + Exceptions.unwrap(ex));
+            if (log.isDebugEnabled())
+                log.debug("Exception occurred, trying to read the error stream: " + Exceptions.unwrap(ex));
             try {
                 inputStream = urlConnection.getErrorStream();
                 return createResponse(urlConnection, inputStream);
             } catch (Exception errorEx) {
-                if (log.isLoggable(Level.FINE))
-                    log.fine("Could not read error stream: " + errorEx);
+                if (log.isDebugEnabled())
+                    log.debug("Could not read error stream: " + errorEx);
                 return null;
             }
         } catch (Exception ex) {
-            log.log(Level.WARNING, "HTTP request failed: " + requestMessage, Exceptions.unwrap(ex));
+            log.warn( "HTTP request failed: " + requestMessage, Exceptions.unwrap(ex));
             return null;
 
         } finally {
@@ -218,11 +218,11 @@ public class StreamClientImpl implements StreamClient {
     }
 
     protected void applyHeaders(HttpURLConnection urlConnection, Headers headers) {
-        log.fine("Writing headers on HttpURLConnection: " + headers.size());
+        log.debug("Writing headers on HttpURLConnection: " + headers.size());
         for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
             for (String v : entry.getValue()) {
                 String headerName = entry.getKey();
-                log.fine("Setting header '" + headerName + "': " + v);
+                log.debug("Setting header '" + headerName + "': " + v);
                 urlConnection.setRequestProperty(headerName, v);
             }
         }
@@ -248,8 +248,8 @@ public class StreamClientImpl implements StreamClient {
     protected StreamResponseMessage createResponse(HttpURLConnection urlConnection, InputStream inputStream) throws Exception {
 
         if (urlConnection.getResponseCode() == -1) {
-            log.warning("Received an invalid HTTP response: " + urlConnection.getURL());
-            log.warning("Is your Cling-based server sending connection heartbeats with " +
+            log.warn("Received an invalid HTTP response: " + urlConnection.getURL());
+            log.warn("Is your Cling-based server sending connection heartbeats with " +
                 "RemoteClientInfo#isRequestCancelled? This client can't handle " +
                 "heartbeats, read the manual.");
             return null;
@@ -258,7 +258,7 @@ public class StreamClientImpl implements StreamClient {
         // Status
         UpnpResponse responseOperation = new UpnpResponse(urlConnection.getResponseCode(), urlConnection.getResponseMessage());
 
-        log.fine("Received response: " + responseOperation);
+        log.debug("Received response: " + responseOperation);
 
         // Message
         StreamResponseMessage responseMessage = new StreamResponseMessage(responseOperation);
@@ -279,19 +279,19 @@ public class StreamClientImpl implements StreamClient {
 
         if (bodyBytes != null && bodyBytes.length > 0 && responseMessage.isContentTypeMissingOrText()) {
 
-            log.fine("Response contains textual entity body, converting then setting string on message");
+            log.debug("Response contains textual entity body, converting then setting string on message");
             responseMessage.setBodyCharacters(bodyBytes);
 
         } else if (bodyBytes != null && bodyBytes.length > 0) {
 
-            log.fine("Response contains binary entity body, setting bytes on message");
+            log.debug("Response contains binary entity body, setting bytes on message");
             responseMessage.setBody(UpnpMessage.BodyType.BYTES, bodyBytes);
 
         } else {
-            log.fine("Response did not contain entity body");
+            log.debug("Response did not contain entity body");
         }
 
-        log.fine("Response message complete: " + responseMessage);
+        log.debug("Response message complete: " + responseMessage);
         return responseMessage;
     }
 

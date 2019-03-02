@@ -17,7 +17,7 @@ package org.fourthline.cling.model.types;
 
 import org.fourthline.cling.model.Constants;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
  */
 public class UDAServiceId extends ServiceId {
 	
-	private static Logger log = Logger.getLogger(UDAServiceId.class.getName());
+	private static Logger log = LoggerFactory.getLogger(UDAServiceId.class.getName());
 
     public static final String DEFAULT_NAMESPACE = "upnp-org";
     public static final String BROKEN_DEFAULT_NAMESPACE = "schemas-upnp-org"; // TODO: UPNP VIOLATION: Intel UPnP tools!
@@ -61,7 +61,7 @@ public class UDAServiceId extends ServiceId {
         // TODO: UPNP VIOLATION: Handle garbage sent by Eyecon Android app
         matcher = Pattern.compile("urn:upnp-orgerviceId:urnchemas-upnp-orgervice:(" + Constants.REGEX_ID + ")").matcher(s);
         if (matcher.matches()) {
-            log.warning("UPnP specification violation, recovering from Eyecon garbage: " + s);
+            log.warn("UPnP specification violation, recovering from Eyecon garbage: " + s);
             return new UDAServiceId(matcher.group(1));
         }
 
@@ -70,7 +70,7 @@ public class UDAServiceId extends ServiceId {
            "ConnectionManager".equals(s) ||
            "RenderingControl".equals(s) ||
            "AVTransport".equals(s)) {
-            log.warning("UPnP specification violation, fixing broken Service ID: " + s);
+            log.warn("UPnP specification violation, fixing broken Service ID: " + s);
             return new UDAServiceId(s);
         }
 

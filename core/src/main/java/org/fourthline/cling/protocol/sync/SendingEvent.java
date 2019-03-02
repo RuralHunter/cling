@@ -15,7 +15,7 @@
 
 package org.fourthline.cling.protocol.sync;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 import org.fourthline.cling.UpnpService;
 import org.fourthline.cling.model.gena.LocalGENASubscription;
 import org.fourthline.cling.model.message.StreamResponseMessage;
@@ -40,7 +40,7 @@ import java.net.URL;
  */
 public class SendingEvent extends SendingSync<OutgoingEventRequestMessage, StreamResponseMessage> {
 
-    final private static Logger log = Logger.getLogger(SendingEvent.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(SendingEvent.class.getName());
 
     final protected String subscriptionId;
     final protected OutgoingEventRequestMessage[] requestMessages;
@@ -70,22 +70,22 @@ public class SendingEvent extends SendingSync<OutgoingEventRequestMessage, Strea
 
     protected StreamResponseMessage executeSync() throws RouterException {
 
-        log.fine("Sending event for subscription: " + subscriptionId);
+        log.debug("Sending event for subscription: " + subscriptionId);
 
         StreamResponseMessage lastResponse = null;
 
         for (OutgoingEventRequestMessage requestMessage : requestMessages) {
 
             if (currentSequence.getValue() == 0) {
-                log.fine("Sending initial event message to callback URL: " + requestMessage.getUri());
+                log.debug("Sending initial event message to callback URL: " + requestMessage.getUri());
             } else {
-                log.fine("Sending event message '"+currentSequence+"' to callback URL: " + requestMessage.getUri());
+                log.debug("Sending event message '"+currentSequence+"' to callback URL: " + requestMessage.getUri());
             }
 
 
             // Send request
             lastResponse = getUpnpService().getRouter().send(requestMessage);
-            log.fine("Received event callback response: " + lastResponse);
+            log.debug("Received event callback response: " + lastResponse);
 
         }
 

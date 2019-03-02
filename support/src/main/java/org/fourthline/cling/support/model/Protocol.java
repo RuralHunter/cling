@@ -15,7 +15,7 @@
 
 package org.fourthline.cling.support.model;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
@@ -30,7 +30,7 @@ public enum Protocol {
     XBMC_GET("xbmc-get"),
     OTHER("other");
 
-    private static final Logger LOG = Logger.getLogger(Protocol.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(Protocol.class.getName());
 
     private String protocolString;
 

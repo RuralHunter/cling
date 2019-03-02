@@ -21,14 +21,14 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.support.model.PlayMode;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public abstract class SetPlayMode extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(SetPlayMode.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SetPlayMode.class.getName());
 
     public SetPlayMode(Service service, PlayMode playMode) {
         this(new UnsignedIntegerFourBytes(0), service, playMode);
@@ -42,6 +42,6 @@ public abstract class SetPlayMode extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        log.fine("Execution successful");
+        log.debug("Execution successful");
     }
 }

@@ -16,7 +16,7 @@
 package org.fourthline.cling.transport.impl;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.fourthline.cling.model.message.gena.IncomingEventRequestMessage;
 import org.fourthline.cling.model.meta.StateVariable;
@@ -43,14 +43,14 @@ import javax.enterprise.inject.Alternative;
 @Alternative
 public class PullGENAEventProcessorImpl extends GENAEventProcessorImpl {
 
-	private static Logger log = Logger.getLogger(GENAEventProcessor.class.getName());
+	private static Logger log = LoggerFactory.getLogger(GENAEventProcessor.class.getName());
 
 	public void readBody(IncomingEventRequestMessage requestMessage) throws UnsupportedDataException {
-        log.fine("Reading body of: " + requestMessage);
-        if (log.isLoggable(Level.FINER)) {
-            log.finer("===================================== GENA BODY BEGIN ============================================");
-            log.finer(requestMessage.getBody() != null ? requestMessage.getBody().toString() : null);
-            log.finer("-===================================== GENA BODY END ============================================");
+        log.debug("Reading body of: " + requestMessage);
+        if (log.isDebugEnabled()) {
+            log.debug("===================================== GENA BODY BEGIN ============================================");
+            log.debug(requestMessage.getBody() != null ? requestMessage.getBody().toString() : null);
+            log.debug("-===================================== GENA BODY END ============================================");
         }
 
         String body = getMessageBody(requestMessage);
@@ -84,7 +84,7 @@ public class PullGENAEventProcessorImpl extends GENAEventProcessorImpl {
 				String stateVariableName = xpp.getName();
 				for (StateVariable stateVariable : stateVariables) {
 					if (stateVariable.getName().equals(stateVariableName)) {
-						log.fine("Reading state variable value: " + stateVariableName);
+						log.debug("Reading state variable value: " + stateVariableName);
 						String value = xpp.nextText();
 						message.getStateVariableValues().add(new StateVariableValue(stateVariable, value));
 						break;

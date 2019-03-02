@@ -21,14 +21,14 @@ import org.seamless.util.Exceptions;
 
 import java.net.URI;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public class EventedValueURI extends EventedValue<URI> {
 
-    final private static Logger log = Logger.getLogger(EventedValueURI.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(EventedValueURI.class.getName());
 
     public EventedValueURI(URI value) {
         super(value);

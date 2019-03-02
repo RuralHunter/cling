@@ -22,7 +22,7 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -40,10 +40,10 @@ import java.util.logging.Logger;
  */
 public class FixedSunURLStreamHandler implements URLStreamHandlerFactory {
 
-    final private static Logger log = Logger.getLogger(FixedSunURLStreamHandler.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(FixedSunURLStreamHandler.class.getName());
 
     public URLStreamHandler createURLStreamHandler(String protocol) {
-        log.fine("Creating new URLStreamHandler for protocol: " + protocol);
+        log.debug("Creating new URLStreamHandler for protocol: " + protocol);
         if ("http".equals(protocol)) {
             return new sun.net.www.protocol.http.Handler() {
 

@@ -27,7 +27,7 @@ import org.fourthline.cling.model.types.ErrorCode;
 import org.fourthline.cling.support.model.container.Container;
 import org.fourthline.cling.support.model.item.Item;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -43,7 +43,7 @@ import java.util.List;
  */
 public abstract class ContentBrowseActionCallback extends Browse {
 
-    private static Logger log = Logger.getLogger(ContentBrowseActionCallback.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ContentBrowseActionCallback.class.getName());
 
     final protected DefaultTreeModel treeModel;
     final protected DefaultMutableTreeNode treeNode;
@@ -70,7 +70,7 @@ public abstract class ContentBrowseActionCallback extends Browse {
     }
 
     public void received(final ActionInvocation actionInvocation, DIDLContent didl) {
-        log.fine("Received browse action DIDL descriptor, creating tree nodes");
+        log.debug("Received browse action DIDL descriptor, creating tree nodes");
         final List<DefaultMutableTreeNode> childNodes = new ArrayList<>();
 
         try {
@@ -108,7 +108,7 @@ public abstract class ContentBrowseActionCallback extends Browse {
             }
 
         } catch (Exception ex) {
-            log.fine("Creating DIDL tree nodes failed: " + ex);
+            log.debug("Creating DIDL tree nodes failed: " + ex);
             actionInvocation.setFailure(
                     new ActionException(ErrorCode.ACTION_FAILED, "Can't create tree child nodes: " + ex, ex)
             );
@@ -140,7 +140,7 @@ public abstract class ContentBrowseActionCallback extends Browse {
     }
 
     protected void updateTreeModel(final List<DefaultMutableTreeNode> childNodes) {
-        log.fine("Adding nodes to tree: " + childNodes.size());
+        log.debug("Adding nodes to tree: " + childNodes.size());
         // Remove all "old" children such as the loading/progress messages
         removeChildren();
 

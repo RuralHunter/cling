@@ -46,7 +46,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Locale;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Reads {@link org.fourthline.cling.model.meta.LocalService} metadata from annotations.
@@ -55,10 +55,10 @@ import java.util.logging.Logger;
  */
 public class AnnotationLocalServiceBinder implements LocalServiceBinder {
 
-    private static Logger log = Logger.getLogger(AnnotationLocalServiceBinder.class.getName());
+    private static Logger log = LoggerFactory.getLogger(AnnotationLocalServiceBinder.class.getName());
 
     public LocalService read(Class<?> clazz) throws LocalServiceBindingException {
-        log.fine("Reading and binding annotations of service implementation class: " + clazz);
+        log.debug("Reading and binding annotations of service implementation class: " + clazz);
 
         // Read the service ID and service type from the annotation
         if (clazz.isAnnotationPresent(UpnpService.class)) {
@@ -106,9 +106,9 @@ public class AnnotationLocalServiceBinder implements LocalServiceBinder {
             return new LocalService(type, id, actions, stateVariables, stringConvertibleTypes, supportsQueryStateVariables);
 
         } catch (ValidationException ex) {
-            log.severe("Could not validate device model: " + ex.toString());
+            log.error("Could not validate device model: " + ex.toString());
             for (ValidationError validationError : ex.getErrors()) {
-                log.severe(validationError.toString());
+                log.error(validationError.toString());
             }
             throw new LocalServiceBindingException("Validation of model failed, check the log");
         }
@@ -168,7 +168,7 @@ public class AnnotationLocalServiceBinder implements LocalServiceBinder {
                 } else if (getter != null) {
                     accessor = new GetterStateVariableAccessor(getter);
                 } else {
-                    log.finer("No field or getter found for state variable, skipping accessor: " + v.name());
+                    log.debug("No field or getter found for state variable, skipping accessor: " + v.name());
                 }
 
                 StateVariable stateVar =

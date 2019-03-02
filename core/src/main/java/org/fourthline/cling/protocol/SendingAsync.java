@@ -20,7 +20,7 @@ import org.fourthline.cling.transport.RouterException;
 import org.seamless.util.Exceptions;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Supertype for all synchronously executing protocols, sending UPnP messages.
@@ -37,7 +37,7 @@ import java.util.logging.Logger;
  */
 public abstract class SendingAsync implements Runnable {
 
-    final private static Logger log = Logger.getLogger(UpnpService.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(UpnpService.class.getName());
 
     private final UpnpService upnpService;
 
@@ -55,7 +55,7 @@ public abstract class SendingAsync implements Runnable {
         } catch (Exception ex) {
             Throwable cause = Exceptions.unwrap(ex);
             if (cause instanceof InterruptedException) {
-                log.log(Level.INFO, "Interrupted protocol '" + getClass().getSimpleName() + "': " + ex, cause);
+                log.info("Interrupted protocol '" + getClass().getSimpleName() + "': " + ex, cause);
             } else {
                 throw new RuntimeException(
                     "Fatal error while executing protocol '" + getClass().getSimpleName() + "': " + ex, ex

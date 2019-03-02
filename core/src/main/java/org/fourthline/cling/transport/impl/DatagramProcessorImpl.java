@@ -15,7 +15,7 @@
 
 package org.fourthline.cling.transport.impl;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 import java.util.logging.Level;
 
 import org.fourthline.cling.model.message.IncomingDatagramMessage;
@@ -41,16 +41,16 @@ import java.util.Locale;
  */
 public class DatagramProcessorImpl implements DatagramProcessor {
 
-    private static Logger log = Logger.getLogger(DatagramProcessor.class.getName());
+    private static Logger log = LoggerFactory.getLogger(DatagramProcessor.class.getName());
 
     public IncomingDatagramMessage read(InetAddress receivedOnAddress, DatagramPacket datagram) throws UnsupportedDataException {
 
         try {
 
-            if (log.isLoggable(Level.FINER)) {
-                log.finer("===================================== DATAGRAM BEGIN ============================================");
-                log.finer(new String(datagram.getData(), "UTF-8"));
-                log.finer("-===================================== DATAGRAM END =============================================");
+            if (log.isDebugEnabled()) {
+                log.debug("===================================== DATAGRAM BEGIN ============================================");
+                log.debug(new String(datagram.getData(), "UTF-8"));
+                log.debug("-===================================== DATAGRAM END =============================================");
             }
 
             ByteArrayInputStream is = new ByteArrayInputStream(datagram.getData());
@@ -96,11 +96,11 @@ public class DatagramProcessorImpl implements DatagramProcessor {
 
         messageData.append(message.getHeaders().toString()).append("\r\n");
 
-        if (log.isLoggable(Level.FINER)) {
-            log.finer("Writing message data for: " + message);
-            log.finer("---------------------------------------------------------------------------------");
-            log.finer(messageData.toString().substring(0, messageData.length() - 2)); // Don't print the blank lines
-            log.finer("---------------------------------------------------------------------------------");
+        if (log.isDebugEnabled()) {
+            log.debug("Writing message data for: " + message);
+            log.debug("---------------------------------------------------------------------------------");
+            log.debug(messageData.toString().substring(0, messageData.length() - 2)); // Don't print the blank lines
+            log.debug("---------------------------------------------------------------------------------");
         }
 
         try {
@@ -108,7 +108,7 @@ public class DatagramProcessorImpl implements DatagramProcessor {
             // TODO: Probably should look into escaping rules, too
             byte[] data = messageData.toString().getBytes("US-ASCII");
 
-            log.fine("Writing new datagram packet with " + data.length + " bytes for: " + message);
+            log.debug("Writing new datagram packet with " + data.length + " bytes for: " + message);
             return new DatagramPacket(data, data.length, message.getDestinationAddress(), message.getDestinationPort());
 
         } catch (UnsupportedEncodingException ex) {

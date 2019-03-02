@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.fourthline.cling.model.ServiceReference;
 import org.fourthline.cling.model.ValidationError;
@@ -35,7 +35,7 @@ import org.fourthline.cling.model.types.ServiceType;
  */
 public abstract class Service<D extends Device, S extends Service> {
 
-	final private static Logger log = Logger.getLogger(Service.class.getName());
+	final private static Logger log = LoggerFactory.getLogger(Service.class.getName());
 
     final private ServiceType serviceType;
     final private ServiceId serviceId;
@@ -188,9 +188,9 @@ public abstract class Service<D extends Device, S extends Service> {
                 List<ValidationError> actionErrors = action.validate();
             	if(actionErrors.size() > 0) {
                     actions.remove(action.getName()); // Remove it
-                    log.warning("Discarding invalid action of service '" + getServiceId() + "': " + action.getName());
+                    log.warn("Discarding invalid action of service '" + getServiceId() + "': " + action.getName());
                     for (ValidationError actionError : actionErrors) {
-                        log.warning("Invalid action '" + action.getName() + "': " + actionError);
+                        log.warn("Invalid action '" + action.getName() + "': " + actionError);
                     }
             	}
             }

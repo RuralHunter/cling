@@ -56,7 +56,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Default configuration data of a typical UPnP stack.
@@ -86,7 +86,7 @@ import java.util.logging.Logger;
 @Alternative
 public class DefaultUpnpServiceConfiguration implements UpnpServiceConfiguration {
 
-    private static Logger log = Logger.getLogger(DefaultUpnpServiceConfiguration.class.getName());
+    private static Logger log = LoggerFactory.getLogger(DefaultUpnpServiceConfiguration.class.getName());
 
     final private int streamListenPort;
 
@@ -258,7 +258,7 @@ public class DefaultUpnpServiceConfiguration implements UpnpServiceConfiguration
     }
 
     public void shutdown() {
-        log.fine("Shutting down default executor service");
+        log.debug("Shutting down default executor service");
         getDefaultExecutorService().shutdownNow();
     }
 
@@ -338,8 +338,8 @@ public class DefaultUpnpServiceConfiguration implements UpnpServiceConfiguration
                     return;
                 }
                 // Log only
-                log.warning("Thread terminated " + runnable + " abruptly with exception: " + throwable);
-                log.warning("Root cause: " + cause);
+                log.warn("Thread terminated " + runnable + " abruptly with exception: " + throwable);
+                log.warn("Root cause: " + cause);
             }
         }
     }

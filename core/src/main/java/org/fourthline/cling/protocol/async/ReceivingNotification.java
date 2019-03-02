@@ -28,7 +28,7 @@ import org.fourthline.cling.protocol.ReceivingAsync;
 import org.fourthline.cling.protocol.RetrieveRemoteDescriptors;
 import org.fourthline.cling.transport.RouterException;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Handles reception of notification messages.
@@ -71,7 +71,7 @@ import java.util.logging.Logger;
  */
 public class ReceivingNotification extends ReceivingAsync<IncomingNotificationRequest> {
 
-    final private static Logger log = Logger.getLogger(ReceivingNotification.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(ReceivingNotification.class.getName());
 
     public ReceivingNotification(UpnpService upnpService, IncomingDatagramMessage<UpnpRequest> inputMessage) {
         super(upnpService, new IncomingNotificationRequest(inputMessage));
@@ -81,40 +81,40 @@ public class ReceivingNotification extends ReceivingAsync<IncomingNotificationRe
 
         UDN udn = getInputMessage().getUDN();
         if (udn == null) {
-            log.fine("Ignoring notification message without UDN: " + getInputMessage());
+            log.debug("Ignoring notification message without UDN: " + getInputMessage());
             return;
         }
 
         RemoteDeviceIdentity rdIdentity = new RemoteDeviceIdentity(getInputMessage());
-        log.fine("Received device notification: " + rdIdentity);
+        log.debug("Received device notification: " + rdIdentity);
 
         RemoteDevice rd;
         try {
             rd = new RemoteDevice(rdIdentity);
         } catch (ValidationException ex) {
-            log.warning("Validation errors of device during discovery: " + rdIdentity);
+            log.warn("Validation errors of device during discovery: " + rdIdentity);
             for (ValidationError validationError : ex.getErrors()) {
-                log.warning(validationError.toString());
+                log.warn(validationError.toString());
             }
             return;
         }
 
         if (getInputMessage().isAliveMessage()) {
 
-            log.fine("Received device ALIVE advertisement, descriptor location is: " + rdIdentity.getDescriptorURL());
+            log.debug("Received device ALIVE advertisement, descriptor location is: " + rdIdentity.getDescriptorURL());
 
             if (rdIdentity.getDescriptorURL() == null) {
-                log.finer("Ignoring message without location URL header: " + getInputMessage());
+                log.debug("Ignoring message without location URL header: " + getInputMessage());
                 return;
             }
 
             if (rdIdentity.getMaxAgeSeconds() == null) {
-                log.finer("Ignoring message without max-age header: " + getInputMessage());
+                log.debug("Ignoring message without max-age header: " + getInputMessage());
                 return;
             }
 
             if (getUpnpService().getRegistry().update(rdIdentity)) {
-                log.finer("Remote device was already known: " + udn);
+                log.debug("Remote device was already known: " + udn);
                 return;
             }
 
@@ -126,14 +126,14 @@ public class ReceivingNotification extends ReceivingAsync<IncomingNotificationRe
 
         } else if (getInputMessage().isByeByeMessage()) {
 
-            log.fine("Received device BYEBYE advertisement");
+            log.debug("Received device BYEBYE advertisement");
             boolean removed = getUpnpService().getRegistry().removeDevice(rd);
             if (removed) {
-                log.fine("Removed remote device from registry: " + rd);
+                log.debug("Removed remote device from registry: " + rd);
             }
 
         } else {
-            log.finer("Ignoring unknown notification message: " + getInputMessage());
+            log.debug("Ignoring unknown notification message: " + getInputMessage());
         }
 
     }

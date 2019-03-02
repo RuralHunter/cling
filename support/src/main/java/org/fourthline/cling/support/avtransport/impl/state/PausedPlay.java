@@ -16,7 +16,7 @@
 package org.fourthline.cling.support.avtransport.impl.state;
 
 import java.net.URI;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.fourthline.cling.support.avtransport.lastchange.AVTransportVariable;
 import org.fourthline.cling.support.model.AVTransport;
@@ -30,14 +30,14 @@ import org.fourthline.cling.support.model.TransportState;
 public abstract class PausedPlay<T extends AVTransport> extends AbstractState<T>
 {
 
-    final private static Logger log = Logger.getLogger(PausedPlay.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(PausedPlay.class.getName());
 
     public PausedPlay(T transport) {
         super(transport);
     }
 
     public void onEntry() {
-        log.fine("Setting transport state to PAUSED_PLAYBACK");
+        log.debug("Setting transport state to PAUSED_PLAYBACK");
         getTransport().setTransportInfo(
                 new TransportInfo(
                         TransportState.PAUSED_PLAYBACK,

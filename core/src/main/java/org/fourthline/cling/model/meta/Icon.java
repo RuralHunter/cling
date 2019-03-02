@@ -31,7 +31,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * The metadata of a device icon, might include the actual image data of a local icon.
@@ -47,7 +47,7 @@ import java.util.logging.Logger;
  */
 public class Icon implements Validatable {
 
-    final private static Logger log = Logger.getLogger(StateVariable.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(StateVariable.class.getName());
 
     final private MimeType mimeType;
     final private int width;
@@ -162,20 +162,20 @@ public class Icon implements Validatable {
         List<ValidationError> errors = new ArrayList<>();
 
         if (getMimeType() == null) {
-            log.warning("UPnP specification violation of: " + getDevice());
-            log.warning("Invalid icon, missing mime type: " + this);
+            log.warn("UPnP specification violation of: " + getDevice());
+            log.warn("Invalid icon, missing mime type: " + this);
         }
         if (getWidth() == 0) {
-            log.warning("UPnP specification violation of: " + getDevice());
-            log.warning("Invalid icon, missing width: " + this);
+            log.warn("UPnP specification violation of: " + getDevice());
+            log.warn("Invalid icon, missing width: " + this);
         }
         if (getHeight() == 0) {
-            log.warning("UPnP specification violation of: " + getDevice());
-            log.warning("Invalid icon, missing height: " + this);
+            log.warn("UPnP specification violation of: " + getDevice());
+            log.warn("Invalid icon, missing height: " + this);
         }
         if (getDepth() == 0) {
-            log.warning("UPnP specification violation of: " + getDevice());
-            log.warning("Invalid icon, missing bitmap depth: " + this);
+            log.warn("UPnP specification violation of: " + getDevice());
+            log.warn("Invalid icon, missing bitmap depth: " + this);
         }
 
         if (getUri() == null) {

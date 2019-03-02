@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Locale;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Transforms known and standardized UPnP/HTTP headers from/to string representation.
@@ -34,7 +34,7 @@ import java.util.logging.Logger;
  */
 public abstract class UpnpHeader<T> {
 
-    final private static Logger log = Logger.getLogger(UpnpHeader.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(UpnpHeader.class.getName());
 
     /**
      * Maps a standardized UPnP header to potential header subtypes.
@@ -169,17 +169,17 @@ public abstract class UpnpHeader<T> {
         for (int i = 0; i < type.getHeaderTypes().length && upnpHeader == null; i++) {
             Class<? extends UpnpHeader> headerClass = type.getHeaderTypes()[i];
             try {
-                log.finest("Trying to parse '" + type + "' with class: " + headerClass.getSimpleName());
+                log.trace("Trying to parse '" + type + "' with class: " + headerClass.getSimpleName());
                 upnpHeader = headerClass.newInstance();
                 if (headerValue != null) {
                     upnpHeader.setString(headerValue);
                 }
             } catch (InvalidHeaderException ex) {
-                log.finest("Invalid header value for tested type: " + headerClass.getSimpleName() + " - " + ex.getMessage());
+                log.trace("Invalid header value for tested type: " + headerClass.getSimpleName() + " - " + ex.getMessage());
                 upnpHeader = null;
             } catch (Exception ex) {
-                log.severe("Error instantiating header of type '" + type + "' with value: " + headerValue);
-                log.log(Level.SEVERE, "Exception root cause: ", Exceptions.unwrap(ex));
+                log.error("Error instantiating header of type '" + type + "' with value: " + headerValue);
+                log.error("Exception root cause: ", Exceptions.unwrap(ex));
             }
 
         }

@@ -27,7 +27,7 @@ import org.fourthline.cling.support.model.BrowseResult;
 import org.fourthline.cling.support.model.DIDLContent;
 import org.fourthline.cling.support.model.SortCriterion;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Invokes a "Browse" action, parses the result.
@@ -54,7 +54,7 @@ public abstract class Browse extends ActionCallback {
         }
     }
 
-    private static Logger log = Logger.getLogger(Browse.class.getName());
+    private static Logger log = LoggerFactory.getLogger(Browse.class.getName());
 
     /**
      * Browse with first result 0 and {@link #getDefaultMaxResults()}, filters with {@link #CAPS_WILDCARD}.
@@ -71,7 +71,7 @@ public abstract class Browse extends ActionCallback {
 
         super(new ActionInvocation(service.getAction("Browse")));
 
-        log.fine("Creating browse action for object ID: " + objectID);
+        log.debug("Creating browse action for object ID: " + objectID);
 
         getActionInvocation().setInput("ObjectID", objectID);
         getActionInvocation().setInput("BrowseFlag", flag.toString());
@@ -90,7 +90,7 @@ public abstract class Browse extends ActionCallback {
     }
 
     public void success(ActionInvocation invocation) {
-        log.fine("Successful browse action, reading output argument values");
+        log.debug("Successful browse action, reading output argument values");
 
         BrowseResult result = new BrowseResult(
                 invocation.getOutput("Result").getValue().toString(),
@@ -134,7 +134,7 @@ public abstract class Browse extends ActionCallback {
 
     public boolean receivedRaw(ActionInvocation actionInvocation, BrowseResult browseResult) {
         /*
-        if (log.isLoggable(Level.FINER)) {
+        if (log.isDebugEnabled()) {
             log.finer("-------------------------------------------------------------------------------------");
             log.finer("\n" + XML.pretty(browseResult.getDidl()));
             log.finer("-------------------------------------------------------------------------------------");

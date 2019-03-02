@@ -35,7 +35,7 @@ import org.fourthline.cling.support.model.ProtocolInfos;
 import java.beans.PropertyChangeSupport;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Base for connection management, implements the connection ID "0" behavior.
@@ -62,7 +62,7 @@ import java.util.logging.Logger;
 })
 public class ConnectionManagerService {
 
-    final private static Logger log = Logger.getLogger(ConnectionManagerService.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(ConnectionManagerService.class.getName());
 
     final protected PropertyChangeSupport propertyChangeSupport;
     final protected Map<Integer, ConnectionInfo> activeConnections = new ConcurrentHashMap();
@@ -121,7 +121,7 @@ public class ConnectionManagerService {
     })
     synchronized public ConnectionInfo getCurrentConnectionInfo(@UpnpInputArgument(name = "ConnectionID") int connectionId)
             throws ActionException {
-        log.fine("Getting connection information of connection ID: " + connectionId);
+        log.debug("Getting connection information of connection ID: " + connectionId);
         ConnectionInfo info;
         if ((info = activeConnections.get(connectionId)) == null) {
             throw new ConnectionManagerException(
@@ -140,7 +140,7 @@ public class ConnectionManagerService {
         for (Integer connectionID : activeConnections.keySet()) {
             csv.add(new UnsignedIntegerFourBytes(connectionID));
         }
-        log.fine("Returning current connection IDs: " + csv.size());
+        log.debug("Returning current connection IDs: " + csv.size());
         return csv;
     }
 

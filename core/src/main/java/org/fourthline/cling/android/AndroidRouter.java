@@ -31,8 +31,7 @@ import org.fourthline.cling.transport.RouterImpl;
 import org.fourthline.cling.transport.spi.InitializationException;
 import org.seamless.util.Exceptions;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Monitors all network connectivity changes, switching the router accordingly.
@@ -42,7 +41,7 @@ import java.util.logging.Logger;
  */
 public class AndroidRouter extends RouterImpl {
 
-    final private static Logger log = Logger.getLogger(Router.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(Router.class.getName());
 
     final private Context context;
 
@@ -146,7 +145,7 @@ public class AndroidRouter extends RouterImpl {
             //	at android.os.Parcel.readException(Parcel.java:1286)
             //	at android.net.wifi.IWifiManager$Stub$Proxy.setWifiEnabled(IWifiManager.java:1115)
             //	at android.net.wifi.WifiManager.setWifiEnabled(WifiManager.java:946)
-            log.log(Level.WARNING, "SetWifiEnabled failed", t);
+            log.warn("SetWifiEnabled failed", t);
             return false;
         }
     }
@@ -165,7 +164,7 @@ public class AndroidRouter extends RouterImpl {
 
         if (enable) {
             if (multicastLock.isHeld()) {
-                log.warning("WiFi multicast lock already acquired");
+                log.warn("WiFi multicast lock already acquired");
             } else {
                 log.info("WiFi multicast lock acquired");
                 multicastLock.acquire();
@@ -175,7 +174,7 @@ public class AndroidRouter extends RouterImpl {
                 log.info("WiFi multicast lock released");
                 multicastLock.release();
             } else {
-                log.warning("WiFi multicast lock already released");
+                log.warn("WiFi multicast lock already released");
             }
         }
     }
@@ -187,7 +186,7 @@ public class AndroidRouter extends RouterImpl {
 
         if (enable) {
             if (wifiLock.isHeld()) {
-                log.warning("WiFi lock already acquired");
+                log.warn("WiFi lock already acquired");
             } else {
                 log.info("WiFi lock acquired");
                 wifiLock.acquire();
@@ -197,7 +196,7 @@ public class AndroidRouter extends RouterImpl {
                 log.info("WiFi lock released");
                 wifiLock.release();
             } else {
-                log.warning("WiFi lock already released");
+                log.warn("WiFi lock already released");
             }
         }
     }
@@ -238,9 +237,9 @@ public class AndroidRouter extends RouterImpl {
     protected void handleRouterExceptionOnNetworkTypeChange(RouterException ex) {
         Throwable cause = Exceptions.unwrap(ex);
         if (cause instanceof InterruptedException) {
-            log.log(Level.INFO, "Router was interrupted: " + ex, cause);
+            log.info("Router was interrupted: " + ex, cause);
         } else {
-            log.log(Level.WARNING, "Router error on network change: " + ex, ex);
+            log.warn("Router error on network change: " + ex, ex);
         }
     }
 
@@ -269,7 +268,7 @@ public class AndroidRouter extends RouterImpl {
                     } catch (InterruptedException e) {
                         return;
                     }
-                    log.warning(String.format(
+                    log.warn(String.format(
                         "%s => NONE network transition, waiting for new network... retry #%d",
                         networkInfo.getTypeName(), i
                     ));

@@ -24,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Provides UPnP header API in addition to plain multi-map HTTP header access.
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  */
 public class UpnpHeaders extends Headers {
 
-    private static final Logger log = Logger.getLogger(UpnpHeaders.class.getName());
+    private static final Logger log = LoggerFactory.getLogger(UpnpHeaders.class.getName());
 
     protected Map<UpnpHeader.Type, List<UpnpHeader>> parsedHeaders;
 
@@ -55,24 +55,24 @@ public class UpnpHeaders extends Headers {
     protected void parseHeaders() {
         // This runs as late as possible and only when necessary (getter called and map is dirty)
         parsedHeaders = new LinkedHashMap<>();
-        if (log.isLoggable(Level.FINE))
-            log.fine("Parsing all HTTP headers for known UPnP headers: " + size());
+        if (log.isDebugEnabled())
+            log.debug("Parsing all HTTP headers for known UPnP headers: " + size());
         for (Entry<String, List<String>> entry : entrySet()) {
 
             if (entry.getKey() == null) continue; // Oh yes, the JDK has 'null' HTTP headers
 
             UpnpHeader.Type type = UpnpHeader.Type.getByHttpName(entry.getKey());
             if (type == null) {
-                if (log.isLoggable(Level.FINE))
-                    log.fine("Ignoring non-UPNP HTTP header: " + entry.getKey());
+                if (log.isDebugEnabled())
+                    log.debug("Ignoring non-UPNP HTTP header: " + entry.getKey());
                 continue;
             }
 
             for (String value : entry.getValue()) {
                 UpnpHeader upnpHeader = UpnpHeader.newInstance(type, value);
                 if (upnpHeader == null || upnpHeader.getValue() == null) {
-                    if (log.isLoggable(Level.FINE))
-                        log.fine(
+                    if (log.isDebugEnabled())
+                        log.debug(
                             "Ignoring known but irrelevant header (value violates the UDA specification?) '"
                                 + type.getHttpName()
                                 + "': "
@@ -86,8 +86,8 @@ public class UpnpHeaders extends Headers {
     }
 
     protected void addParsedValue(UpnpHeader.Type type, UpnpHeader value) {
-        if (log.isLoggable(Level.FINE))
-            log.fine("Adding parsed header: " + value);
+        if (log.isDebugEnabled())
+            log.debug("Adding parsed header: " + value);
         List<UpnpHeader> list = parsedHeaders.get(type);
         if (list == null) {
             list = new LinkedList<>();
@@ -173,24 +173,24 @@ public class UpnpHeaders extends Headers {
     }
 
     public void log() {
-        if (log.isLoggable(Level.FINE)) {
-            log.fine("############################ RAW HEADERS ###########################");
+        if (log.isDebugEnabled()) {
+            log.debug("############################ RAW HEADERS ###########################");
             for (Entry<String, List<String>> entry : entrySet()) {
-                log.fine("=== NAME : " + entry.getKey());
+                log.debug("=== NAME : " + entry.getKey());
                 for (String v : entry.getValue()) {
-                    log.fine("VALUE: " + v);
+                    log.debug("VALUE: " + v);
                 }
             }
             if (parsedHeaders != null && parsedHeaders.size() > 0) {
-                log.fine("########################## PARSED HEADERS ##########################");
+                log.debug("########################## PARSED HEADERS ##########################");
                 for (Map.Entry<UpnpHeader.Type, List<UpnpHeader>> entry : parsedHeaders.entrySet()) {
-                    log.fine("=== TYPE: " + entry.getKey());
+                    log.debug("=== TYPE: " + entry.getKey());
                     for (UpnpHeader upnpHeader : entry.getValue()) {
-                        log.fine("HEADER: " + upnpHeader);
+                        log.debug("HEADER: " + upnpHeader);
                     }
                 }
             }
-            log.fine("####################################################################");
+            log.debug("####################################################################");
         }
     }
 

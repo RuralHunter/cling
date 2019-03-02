@@ -20,14 +20,14 @@ import org.fourthline.cling.model.action.ActionInvocation;
 import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public abstract class SetAVTransportURI extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(SetAVTransportURI.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SetAVTransportURI.class.getName());
 
     public SetAVTransportURI(Service service, String uri) {
         this(new UnsignedIntegerFourBytes(0), service, uri, null);
@@ -43,7 +43,7 @@ public abstract class SetAVTransportURI extends ActionCallback {
 
     public SetAVTransportURI(UnsignedIntegerFourBytes instanceId, Service service, String uri, String metadata) {
         super(new ActionInvocation(service.getAction("SetAVTransportURI")));
-        log.fine("Creating SetAVTransportURI action for URI: " + uri);
+        log.debug("Creating SetAVTransportURI action for URI: " + uri);
         getActionInvocation().setInput("InstanceID", instanceId);
         getActionInvocation().setInput("CurrentURI", uri);
         getActionInvocation().setInput("CurrentURIMetaData", metadata);
@@ -51,6 +51,6 @@ public abstract class SetAVTransportURI extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        log.fine("Execution successful");
+        log.debug("Execution successful");
     }
 }

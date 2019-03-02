@@ -17,7 +17,7 @@ package org.fourthline.cling.model.types;
 
 import org.fourthline.cling.model.Constants;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
  */
 public class ServiceId {
 
-    final private static Logger log = Logger.getLogger(ServiceId.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(ServiceId.class.getName());
 
     public static final String UNKNOWN = "UNKNOWN";
 
@@ -91,14 +91,14 @@ public class ServiceId {
         // urn:upnp-org:serviceId:
         matcher = Pattern.compile("urn:(" + Constants.REGEX_NAMESPACE + "):serviceId:").matcher(s);
         if (matcher.matches() && matcher.groupCount() >= 1) {
-            log.warning("UPnP specification violation, no service ID token, defaulting to " + UNKNOWN + ": " + s);
+            log.warn("UPnP specification violation, no service ID token, defaulting to " + UNKNOWN + ": " + s);
             return new ServiceId(matcher.group(1), UNKNOWN);
         }
 
         // TODO: UPNP VIOLATION: PS Audio Bridge has invalid service IDs
         String tokens[] = s.split("[:]");
         if (tokens.length == 4) {
-            log.warning("UPnP specification violation, trying a simple colon-split of: " + s);
+            log.warn("UPnP specification violation, trying a simple colon-split of: " + s);
             return new ServiceId(tokens[1], tokens[3]);
         }
 

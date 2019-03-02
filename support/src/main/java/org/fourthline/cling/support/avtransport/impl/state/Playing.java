@@ -23,21 +23,21 @@ import org.fourthline.cling.support.model.TransportInfo;
 import org.fourthline.cling.support.model.TransportState;
 
 import java.net.URI;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public abstract class Playing<T extends AVTransport> extends AbstractState<T> {
 
-    final private static Logger log = Logger.getLogger(Playing.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(Playing.class.getName());
 
     public Playing(T transport) {
         super(transport);
     }
 
     public void onEntry() {
-        log.fine("Setting transport state to PLAYING");
+        log.debug("Setting transport state to PLAYING");
         getTransport().setTransportInfo(
                 new TransportInfo(
                         TransportState.PLAYING,

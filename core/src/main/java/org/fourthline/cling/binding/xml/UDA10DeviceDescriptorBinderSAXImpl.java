@@ -39,7 +39,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import static org.fourthline.cling.binding.xml.Descriptor.Device.ELEMENT;
 
@@ -50,7 +50,7 @@ import static org.fourthline.cling.binding.xml.Descriptor.Device.ELEMENT;
  */
 public class UDA10DeviceDescriptorBinderSAXImpl extends UDA10DeviceDescriptorBinderImpl {
 
-    private static Logger log = Logger.getLogger(DeviceDescriptorBinder.class.getName());
+    private static Logger log = LoggerFactory.getLogger(DeviceDescriptorBinder.class.getName());
 
     @Override
     public <D extends Device> D describe(D undescribedDevice, String descriptorXml) throws DescriptorBindingException, ValidationException {
@@ -60,7 +60,7 @@ public class UDA10DeviceDescriptorBinderSAXImpl extends UDA10DeviceDescriptorBin
         }
 
         try {
-            log.fine("Populating device from XML descriptor: " + undescribedDevice);
+            log.debug("Populating device from XML descriptor: " + undescribedDevice);
 
             // Read the XML into a mutable descriptor graph
 
@@ -139,7 +139,7 @@ public class UDA10DeviceDescriptorBinderSAXImpl extends UDA10DeviceDescriptorBin
                 case major:
                     String majorVersion = getCharacters().trim();
                     if (!majorVersion.equals("1")) {
-                        log.warning("Unsupported UDA major version, ignoring: " + majorVersion);
+                        log.warn("Unsupported UDA major version, ignoring: " + majorVersion);
                         majorVersion = "1";
                     }
                     getInstance().major = Integer.valueOf(majorVersion);
@@ -147,7 +147,7 @@ public class UDA10DeviceDescriptorBinderSAXImpl extends UDA10DeviceDescriptorBin
                 case minor:
                     String minorVersion = getCharacters().trim();
                     if (!minorVersion.equals("0")) {
-                        log.warning("Unsupported UDA minor version, ignoring: " + minorVersion);
+                        log.warn("Unsupported UDA minor version, ignoring: " + minorVersion);
                         minorVersion = "0";
                     }
                     getInstance().minor = Integer.valueOf(minorVersion);
@@ -294,7 +294,7 @@ public class UDA10DeviceDescriptorBinderSAXImpl extends UDA10DeviceDescriptorBin
                 	try {
                 		getInstance().depth = Integer.valueOf(getCharacters());
                 	} catch(NumberFormatException ex) {
-                		log.warning("Invalid icon depth '" + getCharacters() + "', using 16 as default: " + ex);
+                		log.warn("Invalid icon depth '" + getCharacters() + "', using 16 as default: " + ex);
                 		getInstance().depth = 16;
                 	}
                     break;
@@ -306,7 +306,7 @@ public class UDA10DeviceDescriptorBinderSAXImpl extends UDA10DeviceDescriptorBin
                         getInstance().mimeType = getCharacters();
                         MimeType.valueOf(getInstance().mimeType);
                     } catch(IllegalArgumentException ex) {
-                        log.warning("Ignoring invalid icon mime type: " + getInstance().mimeType);
+                        log.warn("Ignoring invalid icon mime type: " + getInstance().mimeType);
                         getInstance().mimeType = "";
                     }
                     break;
@@ -380,7 +380,7 @@ public class UDA10DeviceDescriptorBinderSAXImpl extends UDA10DeviceDescriptorBin
                         break;
                 }
             } catch (InvalidValueException ex) {
-                log.warning(
+                log.warn(
                     "UPnP specification violation, skipping invalid service declaration. " + ex.getMessage()
                 );
             }

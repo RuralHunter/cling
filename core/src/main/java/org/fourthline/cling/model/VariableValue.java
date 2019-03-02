@@ -15,7 +15,7 @@
 
 package org.fourthline.cling.model;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.fourthline.cling.model.types.Datatype;
 import org.fourthline.cling.model.types.InvalidValueException;
@@ -27,7 +27,7 @@ import org.fourthline.cling.model.types.InvalidValueException;
  */
 public class VariableValue {
 
-    final private static Logger log = Logger.getLogger(VariableValue.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(VariableValue.class.getName());
 
     final private Datatype datatype;
     final private Object value;
@@ -97,7 +97,7 @@ public class VariableValue {
                     (cp >= 0x20 && cp <= 0xD7FF) ||
                     (cp >= 0xE000 && cp <= 0xFFFD) ||
                     (cp >= 0x10000 && cp <= 0x10FFFF))) {
-           		log.warning("Found invalid XML char code: " + cp);
+           		log.warn("Found invalid XML char code: " + cp);
             }
             i += Character.charCount(cp);
         }

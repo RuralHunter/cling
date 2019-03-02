@@ -21,7 +21,7 @@ import org.fourthline.cling.model.action.ActionInvocation;
 import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public abstract class Pause extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(Pause.class.getName());
+    private static Logger log = LoggerFactory.getLogger(Pause.class.getName());
 
     protected Pause(ActionInvocation actionInvocation, ControlPoint controlPoint) {
         super(actionInvocation, controlPoint);
@@ -50,6 +50,6 @@ public abstract class Pause extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        log.fine("Execution successful");
+        log.debug("Execution successful");
     }
 }

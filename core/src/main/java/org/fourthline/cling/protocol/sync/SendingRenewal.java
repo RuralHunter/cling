@@ -24,7 +24,7 @@ import org.fourthline.cling.model.message.gena.OutgoingRenewalRequestMessage;
 import org.fourthline.cling.protocol.SendingSync;
 import org.fourthline.cling.transport.RouterException;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Renewing a GENA event subscription with a remote host.
@@ -40,7 +40,7 @@ import java.util.logging.Logger;
  */
 public class SendingRenewal extends SendingSync<OutgoingRenewalRequestMessage, IncomingSubscribeResponseMessage> {
 
-    final private static Logger log = Logger.getLogger(SendingRenewal.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(SendingRenewal.class.getName());
 
     final protected RemoteGENASubscription subscription;
 
@@ -56,7 +56,7 @@ public class SendingRenewal extends SendingSync<OutgoingRenewalRequestMessage, I
     }
 
     protected IncomingSubscribeResponseMessage executeSync() throws RouterException {
-        log.fine("Sending subscription renewal request: " + getInputMessage());
+        log.debug("Sending subscription renewal request: " + getInputMessage());
 
         StreamResponseMessage response;
         try {
@@ -74,7 +74,7 @@ public class SendingRenewal extends SendingSync<OutgoingRenewalRequestMessage, I
         final IncomingSubscribeResponseMessage responseMessage = new IncomingSubscribeResponseMessage(response);
 
         if (response.getOperation().isFailed()) {
-            log.fine("Subscription renewal failed, response was: " + response);
+            log.debug("Subscription renewal failed, response was: " + response);
             getUpnpService().getRegistry().removeRemoteSubscription(subscription);
             getUpnpService().getConfiguration().getRegistryListenerExecutor().execute(
                     new Runnable() {
@@ -84,7 +84,7 @@ public class SendingRenewal extends SendingSync<OutgoingRenewalRequestMessage, I
                     }
             );
         } else if (!responseMessage.isValidHeaders()) {
-            log.severe("Subscription renewal failed, invalid or missing (SID, Timeout) response headers");
+            log.error("Subscription renewal failed, invalid or missing (SID, Timeout) response headers");
             getUpnpService().getConfiguration().getRegistryListenerExecutor().execute(
                     new Runnable() {
                         public void run() {
@@ -93,7 +93,7 @@ public class SendingRenewal extends SendingSync<OutgoingRenewalRequestMessage, I
                     }
             );
         } else {
-            log.fine("Subscription renewed, updating in registry, response was: " + response);
+            log.debug("Subscription renewed, updating in registry, response was: " + response);
             subscription.setActualSubscriptionDurationSeconds(responseMessage.getSubscriptionDurationSeconds());
             getUpnpService().getRegistry().updateRemoteSubscription(subscription);
         }
@@ -102,7 +102,7 @@ public class SendingRenewal extends SendingSync<OutgoingRenewalRequestMessage, I
     }
 
     protected void onRenewalFailure() {
-        log.fine("Subscription renewal failed, removing subscription from registry");
+        log.debug("Subscription renewal failed, removing subscription from registry");
         getUpnpService().getRegistry().removeRemoteSubscription(subscription);
         getUpnpService().getConfiguration().getRegistryListenerExecutor().execute(
                 new Runnable() {

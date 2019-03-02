@@ -21,7 +21,7 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.support.model.SeekMode;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public abstract class Seek extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(Seek.class.getName());
+    private static Logger log = LoggerFactory.getLogger(Seek.class.getName());
 
     public Seek(Service service, String relativeTimeTarget) {
         this(new UnsignedIntegerFourBytes(0), service, SeekMode.REL_TIME, relativeTimeTarget);
@@ -52,6 +52,6 @@ public abstract class Seek extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        log.fine("Execution successful");
+        log.debug("Execution successful");
     }
 }

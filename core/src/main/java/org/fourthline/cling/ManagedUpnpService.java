@@ -39,7 +39,7 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Adapter for CDI environments.
@@ -65,7 +65,7 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class ManagedUpnpService implements UpnpService {
 
-    final private static Logger log = Logger.getLogger(ManagedUpnpService.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(ManagedUpnpService.class.getName());
 
     @Inject
     RegistryListenerAdapter registryListenerAdapter;

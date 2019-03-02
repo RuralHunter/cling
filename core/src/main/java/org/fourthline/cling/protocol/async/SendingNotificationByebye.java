@@ -20,7 +20,7 @@ import org.fourthline.cling.model.meta.LocalDevice;
 import org.fourthline.cling.model.types.NotificationSubtype;
 import org.fourthline.cling.transport.RouterException;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Sending <em>BYEBYE</em> notification messages for a registered local device.
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class SendingNotificationByebye extends SendingNotification {
 
-    final private static Logger log = Logger.getLogger(SendingNotification.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(SendingNotification.class.getName());
 
     public SendingNotificationByebye(UpnpService upnpService, LocalDevice device) {
         super(upnpService, device);
@@ -46,7 +46,7 @@ public class SendingNotificationByebye extends SendingNotification {
 
     @Override
     protected void execute() throws RouterException {
-        log.fine("Sending byebye messages ("+getBulkRepeat()+" times) for: " + getDevice());
+        log.debug("Sending byebye messages ("+getBulkRepeat()+" times) for: " + getDevice());
         super.execute();
     }
 

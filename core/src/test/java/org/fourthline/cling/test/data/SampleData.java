@@ -42,14 +42,14 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.UnknownHostException;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.fourthline.cling.model.profile.DeviceDetailsProvider;
 
 
 public class SampleData {
 
-    private static Logger log = Logger.getLogger(SampleData.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SampleData.class.getName());
 
     /* ###################################################################################### */
 
@@ -226,7 +226,7 @@ public class SampleData {
             if (cause instanceof ValidationException) {
                 ValidationException ex = (ValidationException) cause;
                 for (ValidationError validationError : ex.getErrors()) {
-                    log.severe(validationError.toString());
+                    log.error(validationError.toString());
                 }
             }
 */

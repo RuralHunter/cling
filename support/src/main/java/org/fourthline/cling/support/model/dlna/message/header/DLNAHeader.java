@@ -20,7 +20,7 @@ import org.seamless.util.Exceptions;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 import org.fourthline.cling.model.message.header.InvalidHeaderException;
 import org.fourthline.cling.model.message.header.UpnpHeader;
 
@@ -36,7 +36,7 @@ import org.fourthline.cling.model.message.header.UpnpHeader;
  */
 public abstract class DLNAHeader<T> extends UpnpHeader<T> {
 
-    final private static Logger log = Logger.getLogger(DLNAHeader.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(DLNAHeader.class.getName());
 
     /**
      * Maps a standardized DLNA header to potential header subtypes.
@@ -131,17 +131,17 @@ public abstract class DLNAHeader<T> extends UpnpHeader<T> {
         for (int i = 0; i < type.getHeaderTypes().length && upnpHeader == null; i++) {
             Class<? extends DLNAHeader> headerClass = type.getHeaderTypes()[i];
             try {
-                log.finest("Trying to parse '" + type + "' with class: " + headerClass.getSimpleName());
+                log.trace("Trying to parse '" + type + "' with class: " + headerClass.getSimpleName());
                 upnpHeader = headerClass.newInstance();
                 if (headerValue != null) {
                     upnpHeader.setString(headerValue);
                 }
             } catch (InvalidHeaderException ex) {
-                log.finest("Invalid header value for tested type: " + headerClass.getSimpleName() + " - " + ex.getMessage());
+                log.trace("Invalid header value for tested type: " + headerClass.getSimpleName() + " - " + ex.getMessage());
                 upnpHeader = null;
             } catch (Exception ex) {
-                log.severe("Error instantiating header of type '" + type + "' with value: " + headerValue);
-                log.log(Level.SEVERE, "Exception root cause: ", Exceptions.unwrap(ex));
+                log.error("Error instantiating header of type '" + type + "' with value: " + headerValue);
+                log.error( "Exception root cause: ", Exceptions.unwrap(ex));
             }
 
         }

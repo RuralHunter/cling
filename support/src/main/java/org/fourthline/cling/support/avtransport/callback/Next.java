@@ -21,7 +21,7 @@ import org.fourthline.cling.model.action.ActionInvocation;
 import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public abstract class Next extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(Next.class.getName());
+    private static Logger log = LoggerFactory.getLogger(Next.class.getName());
 
     protected Next(ActionInvocation actionInvocation, ControlPoint controlPoint) {
         super(actionInvocation, controlPoint);
@@ -50,6 +50,6 @@ public abstract class Next extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        log.fine("Execution successful");
+        log.debug("Execution successful");
     }
 }

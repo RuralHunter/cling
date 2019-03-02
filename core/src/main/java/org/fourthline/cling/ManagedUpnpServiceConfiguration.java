@@ -50,7 +50,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Adapter for CDI environments.
@@ -60,7 +60,7 @@ import java.util.logging.Logger;
 @ApplicationScoped
 public class ManagedUpnpServiceConfiguration implements UpnpServiceConfiguration {
 
-    private static Logger log = Logger.getLogger(DefaultUpnpServiceConfiguration.class.getName());
+    private static Logger log = LoggerFactory.getLogger(DefaultUpnpServiceConfiguration.class.getName());
 
     // TODO: All of these fields should be injected so users can provide values through CDI
 
@@ -222,7 +222,7 @@ public class ManagedUpnpServiceConfiguration implements UpnpServiceConfiguration
     }
 
     public void shutdown() {
-        log.fine("Shutting down default executor service");
+        log.debug("Shutting down default executor service");
         getDefaultExecutorService().shutdownNow();
     }
 

@@ -22,21 +22,21 @@ import org.fourthline.cling.support.model.TransportInfo;
 import org.fourthline.cling.support.model.TransportState;
 
 import java.net.URI;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public abstract class NoMediaPresent<T extends AVTransport> extends AbstractState<T> {
 
-    final private static Logger log = Logger.getLogger(Stopped.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(Stopped.class.getName());
 
     public NoMediaPresent(T transport) {
         super(transport);
     }
 
     public void onEntry() {
-        log.fine("Setting transport state to NO_MEDIA_PRESENT");
+        log.debug("Setting transport state to NO_MEDIA_PRESENT");
         getTransport().setTransportInfo(
                 new TransportInfo(
                         TransportState.NO_MEDIA_PRESENT,

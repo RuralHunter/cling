@@ -22,7 +22,7 @@ import org.fourthline.cling.transport.spi.GENAEventProcessor;
 import org.seamless.xml.XmlPullParserUtils;
 
 import javax.enterprise.inject.Alternative;
-import java.util.logging.Logger;
+import org.slf4j.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 @Alternative
 public class RecoveringGENAEventProcessorImpl extends PullGENAEventProcessorImpl {
 
-    private static Logger log = Logger.getLogger(GENAEventProcessor.class.getName());
+    private static Logger log = LoggerFactory.getLogger(GENAEventProcessor.class.getName());
 
     public void readBody(IncomingEventRequestMessage requestMessage) throws UnsupportedDataException {
         try {
@@ -61,7 +61,7 @@ public class RecoveringGENAEventProcessorImpl extends PullGENAEventProcessorImpl
             if (!requestMessage.isBodyNonEmptyString())
                 throw ex;
 
-            log.warning("Trying to recover from invalid GENA XML event: " + ex);
+            log.warn("Trying to recover from invalid GENA XML event: " + ex);
 
             // Some properties may have been read at this point, so reset the list
             requestMessage.getStateVariableValues().clear();
@@ -82,7 +82,7 @@ public class RecoveringGENAEventProcessorImpl extends PullGENAEventProcessorImpl
                     // Throw the initial exception containing unmodified XML
                     throw ex;
                 }
-                log.warning("Partial read of GENA event properties (probably due to truncated XML)");
+                log.warn("Partial read of GENA event properties (probably due to truncated XML)");
             }
         }
     }

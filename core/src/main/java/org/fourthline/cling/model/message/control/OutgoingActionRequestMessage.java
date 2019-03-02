@@ -15,7 +15,7 @@
 
 package org.fourthline.cling.model.message.control;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 import org.fourthline.cling.model.action.ActionInvocation;
 import org.fourthline.cling.model.action.RemoteActionInvocation;
 import org.fourthline.cling.model.meta.Action;
@@ -35,7 +35,7 @@ import java.net.URL;
  */
 public class OutgoingActionRequestMessage extends StreamRequestMessage implements ActionRequestMessage {
 
-    private static Logger log = Logger.getLogger(OutgoingActionRequestMessage.class.getName());
+    private static Logger log = LoggerFactory.getLogger(OutgoingActionRequestMessage.class.getName());
 
     final private String actionNamespace;
 
@@ -67,7 +67,7 @@ public class OutgoingActionRequestMessage extends StreamRequestMessage implement
 
         SoapActionHeader soapActionHeader;
         if (action instanceof QueryStateVariableAction) {
-            log.fine("Adding magic control SOAP action header for state variable query action");
+            log.debug("Adding magic control SOAP action header for state variable query action");
             soapActionHeader = new SoapActionHeader(
                     new SoapActionType(
                             SoapActionType.MAGIC_CONTROL_NS, SoapActionType.MAGIC_CONTROL_TYPE, null, action.getName()
@@ -88,7 +88,7 @@ public class OutgoingActionRequestMessage extends StreamRequestMessage implement
         if (getOperation().getMethod().equals(UpnpRequest.Method.POST)) {
 
             getHeaders().add(UpnpHeader.Type.SOAPACTION, soapActionHeader);
-            log.fine("Added SOAP action header: " + soapActionHeader);
+            log.debug("Added SOAP action header: " + soapActionHeader);
 
         /* TODO: Finish the M-POST crap (or not)
         } else if (getOperation().getMethod().equals(UpnpRequest.Method.MPOST)) {
@@ -97,7 +97,7 @@ public class OutgoingActionRequestMessage extends StreamRequestMessage implement
 
             getHeaders().add(UpnpHeader.Type.SOAPACTION, soapActionHeader);
             getHeaders().setPrefix(UpnpHeader.Type.SOAPACTION, "01");
-            log.fine("Added SOAP action header with prefix '01': " + getHeaders().getFirstHeader(UpnpHeader.Type.SOAPACTION).getString());
+            log.debug("Added SOAP action header with prefix '01': " + getHeaders().getFirstHeader(UpnpHeader.Type.SOAPACTION).getString());
             */
 
         } else {

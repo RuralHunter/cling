@@ -33,7 +33,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Describes either a root or embedded device.
@@ -42,7 +42,7 @@ import java.util.logging.Logger;
  */
 public abstract class Device<DI extends DeviceIdentity, D extends Device, S extends Service> implements Validatable {
 
-    final private static Logger log = Logger.getLogger(Device.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(Device.class.getName());
 
     final private DI identity;
 
@@ -90,7 +90,7 @@ public abstract class Device<DI extends DeviceIdentity, D extends Device, S exte
                     if(iconErrors.isEmpty()) {
                         validIcons.add(icon);
                     } else {
-                        log.warning("Discarding invalid '" + icon + "': " + iconErrors);
+                        log.warn("Discarding invalid '" + icon + "': " + iconErrors);
                     }
                 }
             }
@@ -121,9 +121,9 @@ public abstract class Device<DI extends DeviceIdentity, D extends Device, S exte
 
         List<ValidationError> errors = validate();
         if (errors.size() > 0) {
-            if (log.isLoggable(Level.FINEST)) {
+            if (log.isTraceEnabled()) {
                 for (ValidationError error : errors) {
-                    log.finest(error.toString());
+                    log.trace(error.toString());
                 }
             }
             throw new ValidationException("Validation of device graph failed, call getErrors() on exception", errors);

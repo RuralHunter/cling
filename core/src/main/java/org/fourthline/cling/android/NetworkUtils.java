@@ -20,7 +20,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import org.fourthline.cling.model.ModelUtil;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Android network helpers.
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public class NetworkUtils {
 
-    final private static Logger log = Logger.getLogger(NetworkUtils.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(NetworkUtils.class.getName());
 
     static public NetworkInfo getConnectedNetworkInfo(Context context) {
 

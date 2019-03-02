@@ -25,7 +25,7 @@ import org.fourthline.cling.protocol.SendingSync;
 import org.fourthline.cling.transport.RouterException;
 
 import java.util.List;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Establishing a GENA event subscription with a remote host.
@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  */
 public class SendingSubscribe extends SendingSync<OutgoingSubscribeRequestMessage, IncomingSubscribeResponseMessage> {
 
-    final private static Logger log = Logger.getLogger(SendingSubscribe.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(SendingSubscribe.class.getName());
 
     final protected RemoteGENASubscription subscription;
 
@@ -71,7 +71,7 @@ public class SendingSubscribe extends SendingSync<OutgoingSubscribeRequestMessag
     protected IncomingSubscribeResponseMessage executeSync() throws RouterException {
 
         if (!getInputMessage().hasCallbackURLs()) {
-            log.fine("Subscription failed, no active local callback URLs available (network disabled?)");
+            log.debug("Subscription failed, no active local callback URLs available (network disabled?)");
             getUpnpService().getConfiguration().getRegistryListenerExecutor().execute(
                 new Runnable() {
                     public void run() {
@@ -82,7 +82,7 @@ public class SendingSubscribe extends SendingSync<OutgoingSubscribeRequestMessag
             return null;
         }
 
-        log.fine("Sending subscription request: " + getInputMessage());
+        log.debug("Sending subscription request: " + getInputMessage());
 
         try {
             // register this pending Subscription to bloc if the notification is received before the
@@ -105,7 +105,7 @@ public class SendingSubscribe extends SendingSync<OutgoingSubscribeRequestMessag
             final IncomingSubscribeResponseMessage responseMessage = new IncomingSubscribeResponseMessage(response);
 
             if (response.getOperation().isFailed()) {
-                log.fine("Subscription failed, response was: " + responseMessage);
+                log.debug("Subscription failed, response was: " + responseMessage);
                 getUpnpService().getConfiguration().getRegistryListenerExecutor().execute(
                     new Runnable() {
                         public void run() {
@@ -114,7 +114,7 @@ public class SendingSubscribe extends SendingSync<OutgoingSubscribeRequestMessag
                     }
                 );
             } else if (!responseMessage.isValidHeaders()) {
-                log.severe("Subscription failed, invalid or missing (SID, Timeout) response headers");
+                log.error("Subscription failed, invalid or missing (SID, Timeout) response headers");
                 getUpnpService().getConfiguration().getRegistryListenerExecutor().execute(
                     new Runnable() {
                         public void run() {
@@ -124,7 +124,7 @@ public class SendingSubscribe extends SendingSync<OutgoingSubscribeRequestMessag
                 );
             } else {
 
-                log.fine("Subscription established, adding to registry, response was: " + response);
+                log.debug("Subscription established, adding to registry, response was: " + response);
                 subscription.setSubscriptionId(responseMessage.getSubscriptionId());
                 subscription.setActualSubscriptionDurationSeconds(responseMessage.getSubscriptionDurationSeconds());
 
@@ -146,7 +146,7 @@ public class SendingSubscribe extends SendingSync<OutgoingSubscribeRequestMessag
     }
 
     protected void onSubscriptionFailure() {
-        log.fine("Subscription failed");
+        log.debug("Subscription failed");
         getUpnpService().getConfiguration().getRegistryListenerExecutor().execute(
             new Runnable() {
                 public void run() {

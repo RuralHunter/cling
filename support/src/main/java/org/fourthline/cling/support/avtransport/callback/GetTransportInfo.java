@@ -21,7 +21,7 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.support.model.TransportInfo;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public abstract class GetTransportInfo extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(GetTransportInfo.class.getName());
+    private static Logger log = LoggerFactory.getLogger(GetTransportInfo.class.getName());
 
     public GetTransportInfo(Service service) {
         this(new UnsignedIntegerFourBytes(0), service);

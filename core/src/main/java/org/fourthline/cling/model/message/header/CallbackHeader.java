@@ -21,14 +21,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public class CallbackHeader extends UpnpHeader<List<URL>> {
 
-    final private static Logger log = Logger.getLogger(CallbackHeader.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(CallbackHeader.class.getName());
 
     public CallbackHeader() {
         setValue(new ArrayList<URL>());
@@ -63,7 +63,7 @@ public class CallbackHeader extends UpnpHeader<List<URL>> {
                 sp = sp.trim();
 
                 if (!sp.startsWith("http://")) {
-                    log.warning("Discarding non-http callback URL: " + sp);
+                    log.warn("Discarding non-http callback URL: " + sp);
                     continue;
                 }
 
@@ -81,7 +81,7 @@ public class CallbackHeader extends UpnpHeader<List<URL>> {
             	    */
                     url.toURI();
                 } catch (URISyntaxException ex) {
-                    log.log(Level.WARNING, "Discarding callback URL, not a valid URI on this platform: " + url, ex);
+                    log.warn("Discarding callback URL, not a valid URI on this platform: " + url, ex);
                     continue;
                 }
 

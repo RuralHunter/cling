@@ -22,7 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 import java.security.MessageDigest;
 import java.math.BigInteger;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * A unique device name.
@@ -38,7 +38,7 @@ import java.util.logging.Logger;
  */
 public class UDN {
 
-    final private static Logger log = Logger.getLogger(UDN.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(UDN.class.getName());
 
     public static final String PREFIX = "uuid:";
 

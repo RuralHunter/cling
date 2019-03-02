@@ -20,7 +20,7 @@ import org.fourthline.cling.model.action.ActionInvocation;
 import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public abstract class Stop extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(Stop.class.getName());
+    private static Logger log = LoggerFactory.getLogger(Stop.class.getName());
 
     public Stop(Service service) {
         this(new UnsignedIntegerFourBytes(0), service);
@@ -41,6 +41,6 @@ public abstract class Stop extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        log.fine("Execution successful");
+        log.debug("Execution successful");
     }
 }

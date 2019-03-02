@@ -21,7 +21,7 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.support.model.Channel;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public abstract class SetMute extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(SetMute.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SetMute.class.getName());
 
     public SetMute(Service service, boolean desiredMute) {
         this(new UnsignedIntegerFourBytes(0), service, desiredMute);
@@ -44,7 +44,7 @@ public abstract class SetMute extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        log.fine("Executed successfully");
+        log.debug("Executed successfully");
 
     }
 }

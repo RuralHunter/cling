@@ -16,7 +16,7 @@
 package org.fourthline.cling.transport.impl;
 
 import java.util.*;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import org.fourthline.cling.model.action.ActionArgumentValue;
 import org.fourthline.cling.model.action.ActionException;
@@ -47,7 +47,7 @@ import javax.enterprise.inject.Alternative;
 @Alternative
 public class PullSOAPActionProcessorImpl extends SOAPActionProcessorImpl {
 
-    protected static Logger log = Logger.getLogger(SOAPActionProcessor.class.getName());
+    protected static Logger log = LoggerFactory.getLogger(SOAPActionProcessor.class.getName());
 
     public void readBody(ActionRequestMessage requestMessage, ActionInvocation actionInvocation) throws UnsupportedDataException {
         String body = getMessageBody(requestMessage);
@@ -165,7 +165,7 @@ public class PullSOAPActionProcessorImpl extends SOAPActionProcessorImpl {
                     "Could not find argument '" + arg.getName() + "' node");
             }
 
-            log.fine("Reading action argument: " + arg.getName());
+            log.debug("Reading action argument: " + arg.getName());
             values[i] = createValue(arg, value);
         }
         return values;
@@ -205,10 +205,10 @@ public class PullSOAPActionProcessorImpl extends SOAPActionProcessorImpl {
                 int numericCode = Integer.valueOf(errorCode);
                 ErrorCode standardErrorCode = ErrorCode.getByCode(numericCode);
                 if (standardErrorCode != null) {
-                    log.fine("Reading fault element: " + standardErrorCode.getCode() + " - " + errorDescription);
+                    log.debug("Reading fault element: " + standardErrorCode.getCode() + " - " + errorDescription);
                     return new ActionException(standardErrorCode, errorDescription, false);
                 } else {
-                    log.fine("Reading fault element: " + numericCode + " - " + errorDescription);
+                    log.debug("Reading fault element: " + numericCode + " - " + errorDescription);
                     return new ActionException(numericCode, errorDescription);
                 }
             } catch (NumberFormatException ex) {

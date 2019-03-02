@@ -21,7 +21,7 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.support.model.MediaInfo;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -29,7 +29,7 @@ import java.util.logging.Logger;
  */
 public abstract class GetMediaInfo extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(GetMediaInfo.class.getName());
+    private static Logger log = LoggerFactory.getLogger(GetMediaInfo.class.getName());
 
     public GetMediaInfo(Service service) {
         this(new UnsignedIntegerFourBytes(0), service);

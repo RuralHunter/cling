@@ -34,7 +34,7 @@ import org.fourthline.cling.support.model.ProtocolInfo;
 import org.fourthline.cling.support.model.ProtocolInfos;
 
 import java.beans.PropertyChangeSupport;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Support for setup and teardown of an arbitrary number of connections with a manager peer.
@@ -44,7 +44,7 @@ import java.util.logging.Logger;
  */
 public abstract class AbstractPeeringConnectionManagerService extends ConnectionManagerService {
 
-    final private static Logger log = Logger.getLogger(AbstractPeeringConnectionManagerService.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(AbstractPeeringConnectionManagerService.class.getName());
 
     protected AbstractPeeringConnectionManagerService(ConnectionInfo... activeConnections) {
         super(activeConnections);
@@ -72,7 +72,7 @@ public abstract class AbstractPeeringConnectionManagerService extends Connection
     synchronized protected void storeConnection(ConnectionInfo info) {
         CSV<UnsignedIntegerFourBytes> oldConnectionIDs = getCurrentConnectionIDs();
         activeConnections.put(info.getConnectionID(), info);
-        log.fine("Connection stored, firing event: " + info.getConnectionID());
+        log.debug("Connection stored, firing event: " + info.getConnectionID());
         CSV<UnsignedIntegerFourBytes> newConnectionIDs = getCurrentConnectionIDs();
         getPropertyChangeSupport().firePropertyChange("CurrentConnectionIDs", oldConnectionIDs, newConnectionIDs);
     }
@@ -80,7 +80,7 @@ public abstract class AbstractPeeringConnectionManagerService extends Connection
     synchronized protected void removeConnection(int connectionID) {
         CSV<UnsignedIntegerFourBytes> oldConnectionIDs = getCurrentConnectionIDs();
         activeConnections.remove(connectionID);
-        log.fine("Connection removed, firing event: " + connectionID);
+        log.debug("Connection removed, firing event: " + connectionID);
         CSV<UnsignedIntegerFourBytes> newConnectionIDs = getCurrentConnectionIDs();
         getPropertyChangeSupport().firePropertyChange("CurrentConnectionIDs", oldConnectionIDs, newConnectionIDs);
     }
@@ -106,7 +106,7 @@ public abstract class AbstractPeeringConnectionManagerService extends Connection
             throw new ConnectionManagerException(ErrorCode.ARGUMENT_VALUE_INVALID, "Unsupported direction: " + direction);
         }
 
-        log.fine("Preparing for connection with local new ID " + connectionId + " and peer connection ID: " + peerConnectionId);
+        log.debug("Preparing for connection with local new ID " + connectionId + " and peer connection ID: " + peerConnectionId);
 
         ConnectionInfo newConnectionInfo = createConnection(
                 connectionId,
@@ -125,7 +125,7 @@ public abstract class AbstractPeeringConnectionManagerService extends Connection
     synchronized public void connectionComplete(@UpnpInputArgument(name = "ConnectionID", stateVariable = "A_ARG_TYPE_ConnectionID") int connectionID)
             throws ActionException {
         ConnectionInfo info = getCurrentConnectionInfo(connectionID);
-        log.fine("Closing connection ID " + connectionID);
+        log.debug("Closing connection ID " + connectionID);
         closeConnection(info);
         removeConnection(connectionID);
     }
@@ -147,7 +147,7 @@ public abstract class AbstractPeeringConnectionManagerService extends Connection
 
         final int localConnectionID = getNewConnectionId();
 
-        log.fine("Creating new connection ID " + localConnectionID + " with peer: " + peerService);
+        log.debug("Creating new connection ID " + localConnectionID + " with peer: " + peerService);
         final boolean[] failed = new boolean[1];
         new PrepareForConnection(
                 peerService,
@@ -201,7 +201,7 @@ public abstract class AbstractPeeringConnectionManagerService extends Connection
                                                      final ConnectionInfo connectionInfo) throws ActionException {
 
         // It is important that you synchronize the whole procedure
-        log.fine("Closing connection ID " + connectionInfo.getConnectionID() + " with peer: " + peerService);
+        log.debug("Closing connection ID " + connectionInfo.getConnectionID() + " with peer: " + peerService);
         new ConnectionComplete(
                 peerService,
                 controlPoint,

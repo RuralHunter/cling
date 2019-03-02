@@ -35,7 +35,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 import static org.fourthline.cling.binding.xml.Descriptor.Service.ATTRIBUTE;
 import static org.fourthline.cling.binding.xml.Descriptor.Service.ELEMENT;
@@ -47,7 +47,7 @@ import static org.fourthline.cling.binding.xml.Descriptor.Service.ELEMENT;
  */
 public class UDA10ServiceDescriptorBinderSAXImpl extends UDA10ServiceDescriptorBinderImpl {
 
-    private static Logger log = Logger.getLogger(ServiceDescriptorBinder.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ServiceDescriptorBinder.class.getName());
 
     @Override
     public <S extends Service> S describe(S undescribedService, String descriptorXml) throws DescriptorBindingException, ValidationException {
@@ -57,7 +57,7 @@ public class UDA10ServiceDescriptorBinderSAXImpl extends UDA10ServiceDescriptorB
         }
 
         try {
-            log.fine("Reading service from XML descriptor");
+            log.debug("Reading service from XML descriptor");
 
             SAXParser parser = new SAXParser();
 
@@ -242,7 +242,7 @@ public class UDA10ServiceDescriptorBinderSAXImpl extends UDA10ServiceDescriptorB
                         getInstance().direction = ActionArgument.Direction.valueOf(directionString.toUpperCase(Locale.ROOT));
                     } catch (IllegalArgumentException ex) {
                         // TODO: UPNP VIOLATION: Pelco SpectraIV-IP uses illegal value INOUT
-                        log.warning("UPnP specification violation: Invalid action argument direction, assuming 'IN': " + directionString);
+                        log.warn("UPnP specification violation: Invalid action argument direction, assuming 'IN': " + directionString);
                         getInstance().direction = ActionArgument.Direction.IN;
                     }
                     break;

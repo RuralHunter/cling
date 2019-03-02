@@ -21,7 +21,7 @@ import org.fourthline.cling.model.message.StreamResponseMessage;
 import org.fourthline.cling.model.profile.RemoteClientInfo;
 import org.fourthline.cling.transport.RouterException;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Supertype for all synchronously executing protocols, handling reception of UPnP messages and return a response.
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
  */
 public abstract class ReceivingSync<IN extends StreamRequestMessage, OUT extends StreamResponseMessage> extends ReceivingAsync<IN> {
 
-    final private static Logger log = Logger.getLogger(UpnpService.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(UpnpService.class.getName());
 
     final protected RemoteClientInfo remoteClientInfo;
     protected OUT outputMessage;
@@ -63,7 +63,7 @@ public abstract class ReceivingSync<IN extends StreamRequestMessage, OUT extends
         outputMessage = executeSync();
 
         if (outputMessage != null && getRemoteClientInfo().getExtraResponseHeaders().size() > 0) {
-            log.fine("Setting extra headers on response message: " + getRemoteClientInfo().getExtraResponseHeaders().size());
+            log.debug("Setting extra headers on response message: " + getRemoteClientInfo().getExtraResponseHeaders().size());
             outputMessage.getHeaders().putAll(getRemoteClientInfo().getExtraResponseHeaders());
         }
     }

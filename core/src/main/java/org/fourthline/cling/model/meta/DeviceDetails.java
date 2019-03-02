@@ -24,7 +24,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Encapsulates all optional metadata about a device.
@@ -33,7 +33,7 @@ import java.util.logging.Logger;
  */
 public class DeviceDetails implements Validatable {
 
-    final private static Logger log = Logger.getLogger(DeviceDetails.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(DeviceDetails.class.getName());
 
     final private URL baseURL;
     final private String friendlyName;
@@ -203,12 +203,12 @@ public class DeviceDetails implements Validatable {
         if (getUpc() != null) {
             // This is broken in more than half of the devices I've tested, so let's not even bother with a warning
             if (getUpc().length() != 12) {
-                log.fine("UPnP specification violation, UPC must be 12 digits: " + getUpc());
+                log.debug("UPnP specification violation, UPC must be 12 digits: " + getUpc());
             } else {
                 try {
                     Long.parseLong(getUpc());
                 } catch (NumberFormatException ex) {
-                    log.fine("UPnP specification violation, UPC must be 12 digits all-numeric: " + getUpc());
+                    log.debug("UPnP specification violation, UPC must be 12 digits all-numeric: " + getUpc());
                 }
             }
         }

@@ -21,14 +21,14 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.support.model.TransportAction;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public abstract class GetCurrentTransportActions extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(GetCurrentTransportActions.class.getName());
+    private static Logger log = LoggerFactory.getLogger(GetCurrentTransportActions.class.getName());
 
     public GetCurrentTransportActions(Service service) {
         this(new UnsignedIntegerFourBytes(0), service);

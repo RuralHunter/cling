@@ -22,7 +22,7 @@ import org.fourthline.cling.model.types.UnsignedIntegerFourBytes;
 import org.fourthline.cling.model.types.UnsignedIntegerTwoBytes;
 import org.fourthline.cling.support.model.Channel;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  *
@@ -30,7 +30,7 @@ import java.util.logging.Logger;
  */
 public abstract class SetVolume extends ActionCallback {
 
-    private static Logger log = Logger.getLogger(SetVolume.class.getName());
+    private static Logger log = LoggerFactory.getLogger(SetVolume.class.getName());
 
     public SetVolume(Service service, long newVolume) {
         this(new UnsignedIntegerFourBytes(0), service, newVolume);
@@ -45,7 +45,7 @@ public abstract class SetVolume extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        log.fine("Executed successfully");
+        log.debug("Executed successfully");
 
     }
 }

@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * A singleton wrapper of a <code>org.eclipse.jetty.server.Server</code>.
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
  */
 public class JettyServletContainer implements ServletContainerAdapter {
 
-    final private static Logger log = Logger.getLogger(JettyServletContainer.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(JettyServletContainer.class.getName());
 
     // Singleton
     public static final JettyServletContainer INSTANCE = new JettyServletContainer();
@@ -88,7 +88,7 @@ public class JettyServletContainer implements ServletContainerAdapter {
             try {
                 connector.start();
             } catch (Exception ex) {
-                log.severe("Couldn't start connector: " + connector + " " + ex);
+                log.error("Couldn't start connector: " + connector + " " + ex);
                 throw new RuntimeException(ex);
             }
         }
@@ -104,7 +104,7 @@ public class JettyServletContainer implements ServletContainerAdapter {
                     try {
                         connector.stop();
                     } catch (Exception ex) {
-                        log.severe("Couldn't stop connector: " + connector + " " + ex);
+                        log.error("Couldn't stop connector: " + connector + " " + ex);
                         throw new RuntimeException(ex);
                     }
                 }
@@ -140,7 +140,7 @@ public class JettyServletContainer implements ServletContainerAdapter {
             try {
                 server.start();
             } catch (Exception ex) {
-                log.severe("Couldn't start Jetty server: " + ex);
+                log.error("Couldn't start Jetty server: " + ex);
                 throw new RuntimeException(ex);
             }
         }
@@ -153,7 +153,7 @@ public class JettyServletContainer implements ServletContainerAdapter {
             try {
                 server.stop();
             } catch (Exception ex) {
-                log.severe("Couldn't stop Jetty server: " + ex);
+                log.error("Couldn't stop Jetty server: " + ex);
                 throw new RuntimeException(ex);
             } finally {
                 resetServer();
@@ -182,15 +182,15 @@ public class JettyServletContainer implements ServletContainerAdapter {
         Request jettyRequest = (Request)request;
         AbstractHttpConnection connection = jettyRequest.getConnection();
         Socket socket = (Socket)connection.getEndPoint().getTransport();
-        if (log.isLoggable(Level.FINE))
-            log.fine("Checking if client connection is still open: " + socket.getRemoteSocketAddress());
+        if (log.isDebugEnabled())
+            log.debug("Checking if client connection is still open: " + socket.getRemoteSocketAddress());
         try {
             socket.getOutputStream().write(heartbeat);
             socket.getOutputStream().flush();
             return true;
         } catch (IOException ex) {
-            if (log.isLoggable(Level.FINE))
-                log.fine("Client connection has been closed: " + socket.getRemoteSocketAddress());
+            if (log.isDebugEnabled())
+                log.debug("Client connection has been closed: " + socket.getRemoteSocketAddress());
             return false;
         }
     }

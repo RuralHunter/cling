@@ -28,8 +28,7 @@ import org.fourthline.cling.transport.RouterImpl;
 import org.seamless.util.Exceptions;
 
 import javax.enterprise.inject.Alternative;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Default implementation of {@link UpnpService}, starts immediately on construction.
@@ -49,7 +48,7 @@ import java.util.logging.Logger;
 @Alternative
 public class UpnpServiceImpl implements UpnpService {
 
-    private static Logger log = Logger.getLogger(UpnpServiceImpl.class.getName());
+    private static Logger log = LoggerFactory.getLogger(UpnpServiceImpl.class.getName());
 
     protected final UpnpServiceConfiguration configuration;
     protected final ControlPoint controlPoint;
@@ -163,9 +162,9 @@ public class UpnpServiceImpl implements UpnpService {
         } catch (RouterException ex) {
             Throwable cause = Exceptions.unwrap(ex);
             if (cause instanceof InterruptedException) {
-                log.log(Level.INFO, "Router shutdown was interrupted: " + ex, cause);
+                log.info("Router shutdown was interrupted: " + ex, cause);
             } else {
-                log.log(Level.SEVERE, "Router error on shutdown: " + ex, cause);
+                log.error("Router error on shutdown: " + ex, cause);
             }
         }
     }
