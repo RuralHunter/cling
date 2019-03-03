@@ -126,7 +126,7 @@ public class RenderingControlPresenter implements RenderingControlView.Presenter
             public void failure(ActionInvocation invocation,
                                 UpnpResponse operation,
                                 String defaultMsg) {
-                RenderingControlPoint.LOGGER.warning(
+                RenderingControlPoint.LOGGER.warn(
                     "Can't set mute: " + defaultMsg
                 );
             }
@@ -147,7 +147,7 @@ public class RenderingControlPresenter implements RenderingControlView.Presenter
             public void failure(ActionInvocation invocation,
                                 UpnpResponse operation,
                                 String defaultMsg) {
-                RenderingControlPoint.LOGGER.warning(
+                RenderingControlPoint.LOGGER.warn(
                     "Can't set volume: " + defaultMsg
                 );
             }
@@ -170,7 +170,7 @@ public class RenderingControlPresenter implements RenderingControlView.Presenter
             public void failure(ActionInvocation invocation,
                                 UpnpResponse operation,
                                 String defaultMsg) {
-                RenderingControlPoint.LOGGER.warning(
+                RenderingControlPoint.LOGGER.warn(
                     "Instance ID " + instanceId + " failed, can't retrieve initial volume: " + defaultMsg
                 );
                 view.getInstanceView(instanceId).setSelectionEnabled(false);

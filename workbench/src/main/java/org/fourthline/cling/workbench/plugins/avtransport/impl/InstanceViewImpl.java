@@ -149,7 +149,7 @@ public class InstanceViewImpl extends JPanel implements InstanceView {
                 try {
                     URI.create(uri);
                 } catch (IllegalArgumentException ex) {
-                    AVTransportControlPoint.LOGGER.warning(
+                    AVTransportControlPoint.LOGGER.warn(
                         "Invalid URI, can't set on AVTransport: " + uri
                     );
                 }
@@ -183,7 +183,7 @@ public class InstanceViewImpl extends JPanel implements InstanceView {
             try {
                 viewStateMachine.forceState(newClientState);
             } catch (Exception ex) {
-                AVTransportControlPoint.LOGGER.severe(
+                AVTransportControlPoint.LOGGER.error(
                     "Error switching client instance state: " + ex
                 );
             }

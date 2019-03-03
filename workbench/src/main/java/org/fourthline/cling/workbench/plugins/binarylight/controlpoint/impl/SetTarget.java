@@ -32,6 +32,6 @@ public abstract class SetTarget extends ActionCallback {
 
     @Override
     public void success(ActionInvocation invocation) {
-        SwitchPowerControlPoint.LOGGER.fine("Executed successfully");
+        SwitchPowerControlPoint.LOGGER.debug("Executed successfully");
     }
 }

@@ -25,7 +25,7 @@ import org.fourthline.cling.workbench.plugins.binarylight.controlpoint.SwitchPow
 
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
@@ -55,15 +55,13 @@ public class SwitchPowerSubscriptionCallback  extends SubscriptionCallback {
     }
 
     public void ended(GENASubscription subscription, CancelReason reason, UpnpResponse responseStatus) {
-        SwitchPowerControlPoint.LOGGER.log(
-            reason != null ? Level.WARNING : Level.INFO,
-            "Subscription with service ended. " + (reason != null ? "Reason: " + reason : "")
+        SwitchPowerControlPoint.LOGGER.info("Subscription with service ended. " + (reason != null ? "Reason: " + reason : "")
         );
         presenter.onDisconnected();
     }
 
     public void eventReceived(GENASubscription subscription) {
-        SwitchPowerControlPoint.LOGGER.fine(
+        SwitchPowerControlPoint.LOGGER.debug(
             "Event received, sequence number: " + subscription.getCurrentSequence()
         );
 
@@ -75,7 +73,7 @@ public class SwitchPowerSubscriptionCallback  extends SubscriptionCallback {
     }
 
     public void eventsMissed(GENASubscription subscription, int numberOfMissedEvents) {
-        SwitchPowerControlPoint.LOGGER.warning(
+        SwitchPowerControlPoint.LOGGER.warn(
             "Events missed (" + numberOfMissedEvents + "), consider restarting this control point!"
         );
     }

@@ -85,13 +85,13 @@ public class Playing extends InstanceViewState {
         }
 
         public void breakLoop() {
-            AVTransportControlPoint.LOGGER.fine("Setting stopped status on thread");
+            AVTransportControlPoint.LOGGER.debug("Setting stopped status on thread");
             stopped = true;
         }
 
         public void run() {
             stopped = false;
-            AVTransportControlPoint.LOGGER.fine(
+            AVTransportControlPoint.LOGGER.debug(
                 "Running position updater loop every milliseconds: " + getSleepIntervalMillis()
             );
             while (!stopped) {
@@ -104,12 +104,12 @@ public class Playing extends InstanceViewState {
 
                 } catch (Exception ex) {
                     breakLoop();
-                    AVTransportControlPoint.LOGGER.fine(
+                    AVTransportControlPoint.LOGGER.debug(
                         "Failed updating position info, polling stopped: " + ex
                     );
                 }
             }
-            AVTransportControlPoint.LOGGER.fine(
+            AVTransportControlPoint.LOGGER.debug(
                 "Stopped status on thread received, ending position updater loop"
             );
         }

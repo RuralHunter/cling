@@ -46,7 +46,7 @@ abstract public class AVTransportCallback extends SubscriptionCallback {
                           UpnpResponse responseStatus,
                           Exception exception,
                           String defaultMsg) {
-        AVTransportControlPoint.LOGGER.severe(defaultMsg);
+        AVTransportControlPoint.LOGGER.error(defaultMsg);
     }
 
     protected void established(GENASubscription subscription) {
@@ -56,15 +56,13 @@ abstract public class AVTransportCallback extends SubscriptionCallback {
     }
 
     protected void ended(GENASubscription subscription, final CancelReason reason, UpnpResponse responseStatus) {
-        AVTransportControlPoint.LOGGER.log(
-            reason != null ? Level.WARNING : Level.INFO,
-            "Subscription with service ended. " + (reason != null ? "Reason: " + reason : "")
+        AVTransportControlPoint.LOGGER.info("Subscription with service ended. " + (reason != null ? "Reason: " + reason : "")
         );
         onDisconnect(reason);
     }
 
     protected void eventReceived(GENASubscription subscription) {
-        AVTransportControlPoint.LOGGER.fine(
+        AVTransportControlPoint.LOGGER.debug(
             "Event received, sequence number: " + subscription.getCurrentSequence()
         );
 
@@ -75,10 +73,10 @@ abstract public class AVTransportCallback extends SubscriptionCallback {
                     subscription.getCurrentValues().get("LastChange").toString()
             );
         } catch (Exception ex) {
-            AVTransportControlPoint.LOGGER.warning(
+            AVTransportControlPoint.LOGGER.warn(
                 "Error parsing LastChange event content: " + ex
             );
-            AVTransportControlPoint.LOGGER.warning(
+            AVTransportControlPoint.LOGGER.warn(
                 "Cause: " + Exceptions.unwrap(ex)
             );
             return;
@@ -88,7 +86,7 @@ abstract public class AVTransportCallback extends SubscriptionCallback {
             public void run() {
                 for (UnsignedIntegerFourBytes instanceId : lastChange.getInstanceIDs()) {
 
-                    AVTransportControlPoint.LOGGER.fine(
+                    AVTransportControlPoint.LOGGER.debug(
                         "Processing LastChange event values for instance: " + instanceId
                     );
 
@@ -99,7 +97,7 @@ abstract public class AVTransportCallback extends SubscriptionCallback {
                             );
 
                     if (transportState != null) {
-                        AVTransportControlPoint.LOGGER.fine(
+                        AVTransportControlPoint.LOGGER.debug(
                             "AVTransport service state changed to: " + transportState.getValue());
                         onStateChange(
                                 new Long(instanceId.getValue()).intValue(),
@@ -114,7 +112,7 @@ abstract public class AVTransportCallback extends SubscriptionCallback {
                             );
 
                     if (currentPlayMode != null) {
-                        AVTransportControlPoint.LOGGER.fine(
+                        AVTransportControlPoint.LOGGER.debug(
                                 "AVTransport service CurrentPlayMode change to: " + currentPlayMode.getValue());
                         onPlayModeChange(
                                 new Long(instanceId.getValue()).intValue(),
@@ -126,7 +124,7 @@ abstract public class AVTransportCallback extends SubscriptionCallback {
                     AVTransportVariable.CurrentTrackURI currentTrackURI =
                             lastChange.getEventedValue(instanceId, AVTransportVariable.CurrentTrackURI.class);
                     if (currentTrackURI != null) {
-                        AVTransportControlPoint.LOGGER.fine(
+                        AVTransportControlPoint.LOGGER.debug(
                             "AVTransport service CurrentTrackURI changed to: " + currentTrackURI.getValue()
                         );
                         onCurrentTrackURIChange(
@@ -140,7 +138,7 @@ abstract public class AVTransportCallback extends SubscriptionCallback {
     }
 
     protected void eventsMissed(GENASubscription subscription, int numberOfMissedEvents) {
-        AVTransportControlPoint.LOGGER.warning(
+        AVTransportControlPoint.LOGGER.warn(
             "Events missed (" + numberOfMissedEvents + "), consider restarting this control point!"
         );
     }

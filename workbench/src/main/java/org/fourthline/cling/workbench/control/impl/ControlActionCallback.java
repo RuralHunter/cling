@@ -46,7 +46,7 @@ abstract public class ControlActionCallback extends ActionCallback {
                     + invocation.getFailure().getCause().getMessage()
             );
         } else {
-            Workbench.Log.ACTION_INVOCATION.severe(defaultMsg);
+            Workbench.Log.ACTION_INVOCATION.error(defaultMsg);
         }
     }
 

@@ -23,14 +23,14 @@ import org.fourthline.cling.workbench.spi.AbstractControlPointAdapter;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
  */
 public class SwitchPowerControlPoint extends AbstractControlPointAdapter {
 
-    final public static Logger LOGGER = Logger.getLogger("SwitchPower ControlPoint");
+    final public static Logger LOGGER = LoggerFactory.getLogger("SwitchPower ControlPoint");
 
     @Inject
     protected Instance<SwitchPowerPresenter> switchPowerPresenterInstance;

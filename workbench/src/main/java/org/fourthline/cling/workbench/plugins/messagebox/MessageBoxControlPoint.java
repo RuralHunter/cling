@@ -19,7 +19,7 @@ import org.fourthline.cling.model.meta.Service;
 import org.fourthline.cling.model.types.ServiceType;
 import org.fourthline.cling.workbench.spi.ControlPointAdapter;
 
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * urn:samsung.com:service:MessageBoxService:1
@@ -28,7 +28,7 @@ import java.util.logging.Logger;
  */
 public class MessageBoxControlPoint implements ControlPointAdapter {
 
-    final public static Logger LOGGER = Logger.getLogger("MessageBox");
+    final public static Logger LOGGER = LoggerFactory.getLogger("MessageBox");
 
     public ServiceType getServiceType() {
         return new ServiceType("samsung.com", "MessageBoxService", 1);

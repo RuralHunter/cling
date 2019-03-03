@@ -139,7 +139,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe(defaultMsg);
+                        AVTransportControlPoint.LOGGER.error(defaultMsg);
                     }
                 }
         );
@@ -161,7 +161,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe(defaultMsg);
+                        AVTransportControlPoint.LOGGER.error(defaultMsg);
                     }
                 }
         );
@@ -182,7 +182,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe(defaultMsg);
+                        AVTransportControlPoint.LOGGER.error(defaultMsg);
                     }
                 }
         );
@@ -203,7 +203,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe(defaultMsg);
+                        AVTransportControlPoint.LOGGER.error(defaultMsg);
                     }
                 }
         );
@@ -211,7 +211,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
 
     @Override
     public void onSeekSelected(int instanceId, String target) {
-        AVTransportControlPoint.LOGGER.fine("Seeking to target time: " + target);
+        AVTransportControlPoint.LOGGER.debug("Seeking to target time: " + target);
         // First update the internal model, so fast clicks will trigger seeks with the right offset
         view.getInstanceView(instanceId).setProgress(
                 new PositionInfo(
@@ -235,7 +235,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe(defaultMsg);
+                        AVTransportControlPoint.LOGGER.error(defaultMsg);
                     }
                 }
         );
@@ -271,7 +271,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe(defaultMsg);
+                        AVTransportControlPoint.LOGGER.error(defaultMsg);
                     }
                 }
         );
@@ -292,7 +292,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe(defaultMsg);
+                        AVTransportControlPoint.LOGGER.error(defaultMsg);
                     }
                 }
         );
@@ -317,7 +317,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                                         UpnpResponse operation,
                                         String defaultMsg) {
                         // TODO: Is this really severe?
-                        AVTransportControlPoint.LOGGER.severe("Can't retrieve PositionInfo: " + defaultMsg);
+                        AVTransportControlPoint.LOGGER.error("Can't retrieve PositionInfo: " + defaultMsg);
                     }
                 }
         );
@@ -339,7 +339,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                                         UpnpResponse operation,
                                         String defaultMsg) {
                         // TODO: Is this really severe?
-                        AVTransportControlPoint.LOGGER.severe("Can't retrieve PositionInfo: " + defaultMsg);
+                        AVTransportControlPoint.LOGGER.error("Can't retrieve PositionInfo: " + defaultMsg);
                     }
                 }
         );
@@ -364,7 +364,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe("Can't retrieve TransportInfo: " + defaultMsg);
+                        AVTransportControlPoint.LOGGER.error("Can't retrieve TransportInfo: " + defaultMsg);
                     }
                 }
         );
@@ -391,7 +391,7 @@ public class AVTransportPresenter implements AVTransportView.Presenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        AVTransportControlPoint.LOGGER.severe("Can't retrieve initial MediaInfo: " + defaultMsg);
+                        AVTransportControlPoint.LOGGER.error("Can't retrieve initial MediaInfo: " + defaultMsg);
                     }
                 }
         );

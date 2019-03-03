@@ -65,7 +65,7 @@ public class WorkbenchToolbarPresenter implements WorkbenchToolbarViewImpl.Prese
         try {
             view.onNetworkSwitch(router.isEnabled());
         } catch (RouterException ex) {
-            Workbench.Log.MAIN.warning("Can't get current router state: " + ex);
+            Workbench.Log.MAIN.warn("Can't get current router state: " + ex);
         }
     }
 
@@ -75,7 +75,7 @@ public class WorkbenchToolbarPresenter implements WorkbenchToolbarViewImpl.Prese
         try {
             view.onNetworkSwitch(router.isEnabled());
         } catch (RouterException ex) {
-            Workbench.Log.MAIN.warning("Can't get current router state: " + ex);
+            Workbench.Log.MAIN.warn("Can't get current router state: " + ex);
         }
     }
 }

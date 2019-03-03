@@ -131,6 +131,12 @@
             <artifactId>ejb-api</artifactId>
             <version>${ejb.api.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.26</version>
+        </dependency>
 
         <!--
         Enable for alternative WorkbenchUpnpConfiguration, see beans.xml

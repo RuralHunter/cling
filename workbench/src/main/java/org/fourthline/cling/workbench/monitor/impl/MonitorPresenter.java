@@ -117,7 +117,7 @@ public class MonitorPresenter implements MonitorView.Presenter {
                                 : "Subscription failed: " + exception.toString();
                     }
 
-                    Workbench.Log.EVENT_MONITOR.severe(failureMessage);
+                    Workbench.Log.EVENT_MONITOR.error(failureMessage);
                     view.setStartStopEnabled(true, false);
 
                 }

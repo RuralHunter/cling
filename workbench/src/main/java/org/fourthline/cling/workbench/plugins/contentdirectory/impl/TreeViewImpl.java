@@ -129,7 +129,7 @@ public class TreeViewImpl extends ContentTree implements TreeView {
     */
 
     public void failure(String message) {
-        ContentDirectoryControlPoint.LOGGER.severe(message);
+        ContentDirectoryControlPoint.LOGGER.error(message);
     }
 
 }

@@ -109,7 +109,7 @@ public class BrowserPresenter implements BrowserView.Presenter {
             try {
                 responseMsg = router.send(iconRetrievalMsg);
             } catch (RouterException ex) {
-                Workbench.Log.MAIN.warning("Icon retrieval failed: " + ex);
+                Workbench.Log.MAIN.warn("Icon retrieval failed: " + ex);
             }
 
             if (responseMsg != null && !responseMsg.getOperation().isFailed()) {
@@ -127,29 +127,29 @@ public class BrowserPresenter implements BrowserView.Presenter {
                             ImageIcon imageIcon = new ImageIcon(imageBody);
                             deviceItem.setIcon(imageIcon);
                         } else {
-                            Workbench.Log.MAIN.warning(
+                            Workbench.Log.MAIN.warn(
                                 "Icon request did not return with response body '" + contentType + "': " + iconRetrievalMsg.getUri()
                             );
                         }
                     } else {
-                        Workbench.Log.MAIN.warning(
+                        Workbench.Log.MAIN.warn(
                             "Icon was delivered with unsupported content type '" + contentType + "': " + iconRetrievalMsg.getUri()
                         );
                     }
                 } else {
-                    Workbench.Log.MAIN.warning(
+                    Workbench.Log.MAIN.warn(
                         "Icon was delivered without content type header in HTTP response': " + iconRetrievalMsg.getUri()
                     );
                 }
 
             } else {
                 if (responseMsg != null) {
-                    Workbench.Log.MAIN.warning(
+                    Workbench.Log.MAIN.warn(
                         "Icon retrieval of '" + iconRetrievalMsg.getUri() + "' failed: " +
                                     responseMsg.getOperation().getResponseDetails()
                     );
                 } else {
-                    Workbench.Log.MAIN.warning(
+                    Workbench.Log.MAIN.warn(
                         "Icon retrieval of '" + iconRetrievalMsg.getUri() + "' failed, no response received."
                     );
                 }

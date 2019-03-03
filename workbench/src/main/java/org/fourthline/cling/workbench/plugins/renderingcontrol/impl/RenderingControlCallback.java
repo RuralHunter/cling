@@ -31,7 +31,7 @@ import org.seamless.swing.logging.LogMessage;
 
 import javax.swing.SwingUtilities;
 import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * @author Christian Bauer
@@ -47,7 +47,7 @@ abstract public class RenderingControlCallback extends SubscriptionCallback {
                           UpnpResponse responseStatus,
                           Exception exception,
                           String defaultMsg) {
-        RenderingControlPoint.LOGGER.severe(defaultMsg);
+        RenderingControlPoint.LOGGER.error(defaultMsg);
     }
 
     public void established(GENASubscription subscription) {
@@ -57,15 +57,13 @@ abstract public class RenderingControlCallback extends SubscriptionCallback {
     }
 
     public void ended(GENASubscription subscription, final CancelReason reason, UpnpResponse responseStatus) {
-        RenderingControlPoint.LOGGER.log(
-            reason != null ? Level.WARNING : Level.INFO,
-            "Subscription with service ended. " + (reason != null ? "Reason: " + reason : "")
+        RenderingControlPoint.LOGGER.info("Subscription with service ended. " + (reason != null ? "Reason: " + reason : "")
         );
         onDisconnect(reason);
     }
 
     public void eventReceived(GENASubscription subscription) {
-        RenderingControlPoint.LOGGER.fine(
+        RenderingControlPoint.LOGGER.debug(
             "Event received, sequence number: " + subscription.getCurrentSequence()
         );
 
@@ -76,7 +74,7 @@ abstract public class RenderingControlCallback extends SubscriptionCallback {
                     subscription.getCurrentValues().get("LastChange").toString()
             );
         } catch (Exception ex) {
-            RenderingControlPoint.LOGGER.warning(
+            RenderingControlPoint.LOGGER.warn(
                 "Error parsing LastChange event content: " + ex
             );
             return;
@@ -86,7 +84,7 @@ abstract public class RenderingControlCallback extends SubscriptionCallback {
             public void run() {
                 for (UnsignedIntegerFourBytes instanceId : lastChange.getInstanceIDs()) {
 
-                    RenderingControlPoint.LOGGER.fine(
+                    RenderingControlPoint.LOGGER.debug(
                         "Processing LastChange event values for instance: " + instanceId
                     );
                     RenderingControlVariable.Volume volume = lastChange.getEventedValue(
@@ -94,7 +92,7 @@ abstract public class RenderingControlCallback extends SubscriptionCallback {
                             RenderingControlVariable.Volume.class
                     );
                     if (volume != null && volume.getValue().getChannel().equals(Channel.Master)) {
-                        RenderingControlPoint.LOGGER.fine(
+                        RenderingControlPoint.LOGGER.debug(
                             "Received new volume value for 'Master' channel: " + volume.getValue()
                         );
                         onMasterVolumeChanged(
@@ -108,7 +106,7 @@ abstract public class RenderingControlCallback extends SubscriptionCallback {
     }
 
     public void eventsMissed(GENASubscription subscription, int numberOfMissedEvents) {
-        RenderingControlPoint.LOGGER.warning(
+        RenderingControlPoint.LOGGER.warn(
             "Events missed (" + numberOfMissedEvents + "), consider restarting this control point!"
         );
     }

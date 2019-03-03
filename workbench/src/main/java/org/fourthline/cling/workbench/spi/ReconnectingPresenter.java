@@ -77,7 +77,7 @@ public abstract class ReconnectingPresenter implements ReconnectView.Presenter {
         try {
             upnpService.getRouter().broadcast(wakeOnLANBytes);
         } catch (RouterException ex) {
-            Workbench.Log.MAIN.warning(
+            Workbench.Log.MAIN.warn(
                 "Broadcasting wakeup bytes on LAN failed: " + ex
             );
         }
@@ -102,7 +102,7 @@ public abstract class ReconnectingPresenter implements ReconnectView.Presenter {
 
     public void onConnectionFailure(String msg) {
         setTitle("Connection failed: " + msg);
-        Workbench.Log.MAIN.warning("Connection failed: " + msg);
+        Workbench.Log.MAIN.warn("Connection failed: " + msg);
         setReconnectViewEnabled(true);
     }
 

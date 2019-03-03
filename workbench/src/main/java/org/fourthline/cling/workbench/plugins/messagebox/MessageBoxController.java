@@ -70,7 +70,7 @@ public class MessageBoxController extends AbstractController<JFrame> {
                             public void failure(ActionInvocation invocation,
                                                 UpnpResponse operation,
                                                 String defaultMsg) {
-                                MessageBoxControlPoint.LOGGER.severe(defaultMsg);
+                                MessageBoxControlPoint.LOGGER.error(defaultMsg);
                             }
                         }
                 );

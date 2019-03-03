@@ -110,7 +110,7 @@ public class PortMappingPresenterImpl implements PortMappingPresenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        WANIPConnectionControlPoint.LOGGER.warning(
+                        WANIPConnectionControlPoint.LOGGER.warn(
                             "Port mapping removal failed: " + defaultMsg
                         );
                     }
@@ -133,7 +133,7 @@ public class PortMappingPresenterImpl implements PortMappingPresenter {
                     public void failure(ActionInvocation invocation,
                                         UpnpResponse operation,
                                         String defaultMsg) {
-                        WANIPConnectionControlPoint.LOGGER.warning(
+                        WANIPConnectionControlPoint.LOGGER.warn(
                             "Port mapping addition failed: " + defaultMsg
                         );
                     }
@@ -207,7 +207,7 @@ public class PortMappingPresenterImpl implements PortMappingPresenter {
                     "Retrieved all port mappings: " + index
                 );
             } else {
-                WANIPConnectionControlPoint.LOGGER.warning(
+                WANIPConnectionControlPoint.LOGGER.warn(
                     "Error retrieving port mapping index '" + index + "': " + defaultMsg
                 );
             }

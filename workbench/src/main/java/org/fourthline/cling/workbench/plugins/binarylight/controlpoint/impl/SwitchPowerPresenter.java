@@ -80,7 +80,7 @@ public class SwitchPowerPresenter extends ReconnectingPresenter implements Switc
             public void failure(ActionInvocation invocation,
                                 UpnpResponse operation,
                                 String defaultMsg) {
-                SwitchPowerControlPoint.LOGGER.warning(
+                SwitchPowerControlPoint.LOGGER.warn(
                     "Can't set target: " + defaultMsg
                 );
             }

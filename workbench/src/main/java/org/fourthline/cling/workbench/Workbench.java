@@ -28,7 +28,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 // TODO: https://issues.jboss.org/browse/WELD-891
 //@Singleton
@@ -38,9 +38,9 @@ public class Workbench extends Main {
     public static final String APPNAME = "Cling Workbench";
 
     public interface Log {
-        Logger MAIN = Logger.getLogger("Workbench");
-        Logger ACTION_INVOCATION = Logger.getLogger("Action Invocation");
-        Logger EVENT_MONITOR = Logger.getLogger("Event Monitor");
+        Logger MAIN = LoggerFactory.getLogger("Workbench");
+        Logger ACTION_INVOCATION = LoggerFactory.getLogger("Action Invocation");
+        Logger EVENT_MONITOR = LoggerFactory.getLogger("Event Monitor");
     }
 
     public static final Weld weld = new Weld() {
