@@ -15,6 +15,7 @@
 
 package org.fourthline.cling.model.meta;
 
+import org.fourthline.cling.model.profile.*;
 import org.fourthline.cling.model.ModelUtil;
 import org.fourthline.cling.model.ServiceManager;
 import org.fourthline.cling.model.ValidationException;
@@ -38,6 +39,8 @@ import java.util.Set;
  * @author Christian Bauer
  */
 public class LocalService<T> extends Service<LocalDevice, LocalService> {
+    
+    private static final ThreadLocal<RemoteClientInfo> clientInfo = new ThreadLocal<>();
 
     final protected Map<Action, ActionExecutor> actionExecutors;
     final protected Map<StateVariable, StateVariableAccessor> stateVariableAccessors;
@@ -129,5 +132,13 @@ public class LocalService<T> extends Service<LocalDevice, LocalService> {
     @Override
     public String toString() {
         return super.toString()  + ", Manager: " + manager;
+    }
+    
+    public void setRemoteClientInfo(RemoteClientInfo remoteClient) {
+        clientInfo.set(remoteClient);
+    }
+    
+    public RemoteClientInfo getRemoteClientInfo() {
+        return clientInfo.get();
     }
 }
