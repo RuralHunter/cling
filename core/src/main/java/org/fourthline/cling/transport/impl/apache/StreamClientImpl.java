@@ -52,8 +52,7 @@ import org.fourthline.cling.transport.spi.StreamClient;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Implementation based on <a href="http://hc.apache.org/">Apache HTTP Components 4.2</a>.
@@ -66,7 +65,7 @@ import java.util.logging.Logger;
  */
 public class StreamClientImpl extends AbstractStreamClient<StreamClientConfigurationImpl, HttpUriRequest> {
 
-    final private static Logger log = Logger.getLogger(StreamClient.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(StreamClient.class.getName());
 
     final protected StreamClientConfigurationImpl configuration;
     final protected PoolingClientConnectionManager clientConnectionManager;
@@ -166,8 +165,8 @@ public class StreamClientImpl extends AbstractStreamClient<StreamClientConfigura
         return new Callable<StreamResponseMessage>() {
             public StreamResponseMessage call() throws Exception {
 
-                if (log.isLoggable(Level.FINE))
-                    log.fine("Sending HTTP request: " + requestMessage);
+                if (log.isDebugEnabled())
+                    log.debug("Sending HTTP request: " + requestMessage);
 
                 return httpClient.execute(request, createResponseHandler());
             }
@@ -184,8 +183,8 @@ public class StreamClientImpl extends AbstractStreamClient<StreamClientConfigura
         if (t instanceof IllegalStateException) {
             // TODO: Document when/why this happens and why we can ignore it, violating the
             // logging rules of the StreamClient#sendRequest() method
-            if (log.isLoggable(Level.FINE))
-                log.fine("Illegal state: " + t.getMessage());
+            if (log.isDebugEnabled())
+                log.debug("Illegal state: " + t.getMessage());
             return true;
         }
         return false;
@@ -193,19 +192,19 @@ public class StreamClientImpl extends AbstractStreamClient<StreamClientConfigura
 
     @Override
     public void stop() {
-        if (log.isLoggable(Level.FINE))
-            log.fine("Shutting down HTTP client connection manager/pool");
+        if (log.isDebugEnabled())
+            log.debug("Shutting down HTTP client connection manager/pool");
         clientConnectionManager.shutdown();
     }
 
     protected HttpEntity createHttpRequestEntity(UpnpMessage upnpMessage) {
         if (upnpMessage.getBodyType().equals(UpnpMessage.BodyType.BYTES)) {
-            if (log.isLoggable(Level.FINE))
-                log.fine("Preparing HTTP request entity as byte[]");
+            if (log.isDebugEnabled())
+                log.debug("Preparing HTTP request entity as byte[]");
             return new ByteArrayEntity(upnpMessage.getBodyBytes());
         } else {
-            if (log.isLoggable(Level.FINE))
-                log.fine("Preparing HTTP request entity as string");
+            if (log.isDebugEnabled())
+                log.debug("Preparing HTTP request entity as string");
             try {
                 String charset = upnpMessage.getContentTypeCharset();
                 return new StringEntity(upnpMessage.getBodyString(), charset != null ? charset : "UTF-8");
@@ -221,8 +220,8 @@ public class StreamClientImpl extends AbstractStreamClient<StreamClientConfigura
             public StreamResponseMessage handleResponse(final HttpResponse httpResponse) throws IOException {
 
                 StatusLine statusLine = httpResponse.getStatusLine();
-                if (log.isLoggable(Level.FINE))
-                    log.fine("Received HTTP response: " + statusLine);
+                if (log.isDebugEnabled())
+                    log.debug("Received HTTP response: " + statusLine);
 
                 // Status
                 UpnpResponse responseOperation =
@@ -237,21 +236,21 @@ public class StreamClientImpl extends AbstractStreamClient<StreamClientConfigura
                 // Body
                 HttpEntity entity = httpResponse.getEntity();
                 if (entity == null || entity.getContentLength() == 0) {
-                    log.fine("HTTP response message has no entity");
+                    log.debug("HTTP response message has no entity");
                     return responseMessage;
                 }
 
                 byte data[] = EntityUtils.toByteArray(entity);
                 if(data != null) {
                 	if (responseMessage.isContentTypeMissingOrText()) {
-                		log.fine("HTTP response message contains text entity");
+                		log.debug("HTTP response message contains text entity");
                 		responseMessage.setBodyCharacters(data);
                 	} else {
-                		log.fine("HTTP response message contains binary entity");
+                		log.debug("HTTP response message contains binary entity");
                 		responseMessage.setBody(UpnpMessage.BodyType.BYTES, data);
                 	}
                 } else {
-                    log.fine("HTTP response message has no entity");
+                    log.debug("HTTP response message has no entity");
                 }
 
                 return responseMessage;

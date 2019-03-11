@@ -59,8 +59,7 @@ import org.seamless.util.Exceptions;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.*;
 
 /**
  * Implementation for Apache HTTP Components API.
@@ -69,7 +68,7 @@ import java.util.logging.Logger;
  */
 public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
 
-    final private static Logger log = Logger.getLogger(UpnpStream.class.getName());
+    final private static Logger log = LoggerFactory.getLogger(UpnpStream.class.getName());
 
     protected final HttpServerConnection connection;
     protected final BasicHttpProcessor httpProcessor = new BasicHttpProcessor();
@@ -109,17 +108,17 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
 
         try {
             while (!Thread.interrupted() && connection.isOpen()) {
-                log.fine("Handling request on open connection...");
+                log.debug("Handling request on open connection...");
                 HttpContext context = new BasicHttpContext(null);
                 httpService.handleRequest(connection, context);
             }
         } catch (ConnectionClosedException ex) {
-            log.fine("Client closed connection");
+            log.debug("Client closed connection");
             responseException(ex);
         } catch (SocketTimeoutException ex) {
-            log.fine("Server-side closed socket (this is 'normal' behavior of Apache HTTP Core!): " + ex.getMessage());
+            log.debug("Server-side closed socket (this is 'normal' behavior of Apache HTTP Core!): " + ex.getMessage());
         } catch (IOException ex) {
-            log.warning("I/O exception during HTTP request processing: " + ex.getMessage());
+            log.warn("I/O exception during HTTP request processing: " + ex.getMessage());
             responseException(ex);
         } catch (HttpException ex) {
             throw new UnsupportedDataException("Request malformed: " + ex.getMessage(), ex);
@@ -127,7 +126,7 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
             try {
                 connection.shutdown();
             } catch (IOException ex) {
-                log.fine("Error closing connection: " + ex.getMessage());
+                log.debug("Error closing connection: " + ex.getMessage());
             }
         }
     }
@@ -147,7 +146,7 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
         protected void doService(HttpRequest httpRequest, HttpResponse httpResponse, HttpContext ctx)
                 throws HttpException, IOException {
 
-            log.fine("Processing HTTP request: " + httpRequest.getRequestLine().toString());
+            log.debug("Processing HTTP request: " + httpRequest.getRequestLine().toString());
 
             // Extract what we need from the HTTP httpRequest
             String requestMethod = httpRequest.getRequestLine().getMethod();
@@ -162,16 +161,16 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
                     );
             } catch(IllegalArgumentException e) {
             	String msg = "Invalid request URI: " + requestURI + ": " + e.getMessage();
-            	log.warning(msg);
+            	log.warn(msg);
                 throw new HttpException(msg, e);
             }
             
             if (requestMessage.getOperation().getMethod().equals(UpnpRequest.Method.UNKNOWN)) {
-                log.fine("Method not supported by UPnP stack: " + requestMethod);
+                log.debug("Method not supported by UPnP stack: " + requestMethod);
                 throw new MethodNotSupportedException("Method not supported: " + requestMethod);
             }
 
-            log.fine("Created new request message: " + requestMessage);
+            log.debug("Created new request message: " + requestMessage);
 
             // HTTP version
             int requestHttpMinorVersion = httpRequest.getProtocolVersion().getMinor();
@@ -185,7 +184,7 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
 
             // Body
             if (httpRequest instanceof HttpEntityEnclosingRequest) {
-                log.fine("Request contains entity body, setting on UPnP message");
+                log.debug("Request contains entity body, setting on UPnP message");
                 
                 HttpEntityEnclosingRequest entityEnclosingHttpRequest = (HttpEntityEnclosingRequest) httpRequest;
                 
@@ -194,19 +193,19 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
                 byte data[] = EntityUtils.toByteArray(entity);
                 if(data != null) {
                 	if (requestMessage.isContentTypeMissingOrText()) {
-                		log.fine("HTTP request message contains text entity");
+                		log.debug("HTTP request message contains text entity");
                 		requestMessage.setBodyCharacters(data);
                 	} else {
-                		log.fine("HTTP request message contains binary entity");
+                		log.debug("HTTP request message contains binary entity");
                 		requestMessage.setBody(UpnpMessage.BodyType.BYTES, data);
                 	}
                 } else {
-                    log.fine("HTTP request message has no entity");
+                    log.debug("HTTP request message has no entity");
                 }
 
 
             } else {
-                log.fine("Request did not contain entity body");
+                log.debug("Request did not contain entity body");
             }
 
             // Finally process it
@@ -214,12 +213,12 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
             try {
                 responseMsg = process(requestMessage);
             } catch (RuntimeException ex) {
-                log.fine("Exception occurred during UPnP stream processing: " + ex);
-                if (log.isLoggable(Level.FINE)) {
-                    log.log(Level.FINE, "Cause: " + Exceptions.unwrap(ex), Exceptions.unwrap(ex));
+                log.debug("Exception occurred during UPnP stream processing: " + ex);
+                if (log.isDebugEnabled()) {
+                    log.debug("Cause: " + Exceptions.unwrap(ex), Exceptions.unwrap(ex));
                 }
 
-                log.fine("Sending HTTP response: " + HttpStatus.SC_INTERNAL_SERVER_ERROR);
+                log.debug("Sending HTTP response: " + HttpStatus.SC_INTERNAL_SERVER_ERROR);
                 httpResponse.setStatusCode(HttpStatus.SC_INTERNAL_SERVER_ERROR);
 
                 responseException(ex);
@@ -227,7 +226,7 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
             }
 
             if (responseMsg != null) {
-                log.fine("Sending HTTP response message: " + responseMsg);
+                log.debug("Sending HTTP response message: " + responseMsg);
 
                 // Status line
                 httpResponse.setStatusLine(
@@ -238,7 +237,7 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
                         )
                 );
 
-                log.fine("Response status line: " + httpResponse.getStatusLine());
+                log.debug("Response status line: " + httpResponse.getStatusLine());
 
                 // Headers
                 httpResponse.setParams(getResponseParams(requestMessage.getOperation()));
@@ -254,7 +253,7 @@ public abstract class HttpServerConnectionUpnpStream extends UpnpStream {
 
             } else {
                 // If it's null, it's 404, everything else needs a proper httpResponse
-                log.fine("Sending HTTP response: " + HttpStatus.SC_NOT_FOUND);
+                log.debug("Sending HTTP response: " + HttpStatus.SC_NOT_FOUND);
                 httpResponse.setStatusCode(HttpStatus.SC_NOT_FOUND);
             }
 
